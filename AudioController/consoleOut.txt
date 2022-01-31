@@ -1,0 +1,68 @@
+[PFile] :: processes.pstorage already exists
+[UI] :: found new Process: Spotify.exe
+[UI] :: found new Process: steam.exe
+[UI] :: found new Process: chrome.exe
+[UI] :: found new Process: javaw.exe
+[PFile] :: groups.pstorage already exists
+[PFile] :: Games.pstorage already exists
+[PFile] :: Browser.pstorage already exists
+[PFile] :: Music.pstorage already exists
+[PFile] :: VOIP.pstorage already exists
+[PFile] :: controls.pstorage already exists
+access
+access
+access
+access
+access
+[PFile] :: CTRL1.pstorage already exists
+access
+access
+access
+access
+access
+[PFile] :: CTRL2.pstorage already exists
+access
+access
+access
+access
+access
+[PFile] :: CTRL3.pstorage already exists
+access
+access
+access
+access
+access
+[PFile] :: CTRL0.pstorage already exists
+[PFile] :: serial.pstorage already exists
+[PFile] :: settings.pstorage already exists
+[Main] :: initialized variables
+[PFile] :: processes.pstorage already exists
+[PFile] :: Games.pstorage already exists
+[PFile] :: Browser.pstorage already exists
+[PFile] :: Music.pstorage already exists
+[PFile] :: VOIP.pstorage already exists
+[PFile] :: groups.pstorage already exists
+[PFile] :: CTRL1.pstorage already exists
+[PFile] :: CTRL2.pstorage already exists
+[PFile] :: CTRL3.pstorage already exists
+[PFile] :: CTRL0.pstorage already exists
+[PFile] :: controls.pstorage already exists
+[PFile] :: serial.pstorage already exists
+[PFile] :: settings.pstorage already exists
+[Main] :: saved variables
+[WindowAdapter] :: closed python
+[PFile] :: processes.pstorage already exists
+[PFile] :: Games.pstorage already exists
+[PFile] :: Browser.pstorage already exists
+[PFile] :: Music.pstorage already exists
+[PFile] :: VOIP.pstorage already exists
+[PFile] :: groups.pstorage already exists
+[PFile] :: CTRL1.pstorage already exists
+[PFile] :: CTRL2.pstorage already exists
+[PFile] :: CTRL3.pstorage already exists
+[PFile] :: CTRL0.pstorage already exists
+[PFile] :: controls.pstorage already exists
+[PFile] :: serial.pstorage already exists
+[PFile] :: settings.pstorage already exists
+[Main] :: saved variables
+PyReader >> [PAC]::AudioProcess[Spotify.exe|=>0.2978515625]
