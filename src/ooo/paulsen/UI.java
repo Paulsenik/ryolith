@@ -12,8 +12,8 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-import com.paulsen.io.serial.PSerialConnection;
-import com.paulsen.ui.*;
+import ooo.paulsen.io.serial.PSerialConnection;
+import ooo.paulsen.ui.*;
 
 public class UI {
 
@@ -71,9 +71,6 @@ public class UI {
     // Settings
     private PUIScrollPanel groupPanel, processPanel;
     private PUIElement addGroupB, removeGroupB, refreshProcessesB;
-
-    // Settings/Menu
-    // TODO
 
     // variables get set once
     private boolean hasInit = false, isSystemTrayWorking = false;
@@ -372,8 +369,6 @@ public class UI {
         c = new PUICanvas(f, new PUIPaintable() {
             @Override
             public void paint(Graphics2D g, int x, int y, int w, int h) {
-
-                System.out.println(Thread.activeCount());
 
                 g.setFont(new Font("Arial", Font.PLAIN, bHeight / 2));
 

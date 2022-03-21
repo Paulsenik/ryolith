@@ -7,8 +7,10 @@ import java.io.PrintStream;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import com.paulsen.io.*;
+import ooo.paulsen.io.*;
 import ooo.paulsen.audiocontrol.AudioManager;
+
+import javax.swing.*;
 
 /**
  * @author Paul
@@ -45,7 +47,12 @@ public class Main {
             }
         }
 
-        am = new AudioManager();
+        try {
+            am = new AudioManager();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e.getMessage(), "Startup-Error", JOptionPane.ERROR_MESSAGE);
+            System.exit(0);
+        }
         ui = new UI();
 
         try {
@@ -69,48 +76,35 @@ public class Main {
 
     public static void initVariables() {
 
-        readSettings();
-
-        if (!existNecessaryFiles()) {
-            return;
-        }
-
         readVariables();
 
         System.out.println("[Main] :: initialized variables");
-    }
-
-    private static boolean existNecessaryFiles() {
-
-        if (!new File(SAVEFOLDER + "/" + "Processes/processes.pstorage").exists())
-            return false;
-        if (!new File(SAVEFOLDER + "/groups.pstorage").exists())
-            return false;
-        if (!new File(SAVEFOLDER + "/controls.pstorage").exists())
-            return false;
-
-        return true;
     }
 
     /**
      * Saves and exits program
      */
     public static void exitAll() {
-        // TODO exit python-script / linux-terminal
         try {
             saveVariables();
         } catch (Exception e) {
             e.printStackTrace();
             ui.f.sendUserError("An Error Occured!\nPlease check consoleOut.txt !!!");
         }
+
+        // Disconnects Serial and stops AudioControl-Thread
+        am.stop();
+
         System.exit(0);
     }
 
-    private static void readSettings() {
-        // TODO
-    }
-
     public static void readVariables() {
+
+        PFolder.createFolder(SAVEFOLDER);
+        PFolder.createFolder(SAVEFOLDER + "/" + "Processes");
+        PFolder.createFolder(SAVEFOLDER + "/" + "Groups");
+        PFolder.createFolder(SAVEFOLDER + "/" + "Controls");
+
         // TODO
     }
 
@@ -122,6 +116,7 @@ public class Main {
         PFolder.createFolder(SAVEFOLDER + "/" + "Groups");
         PFolder.createFolder(SAVEFOLDER + "/" + "Controls");
 
+        // TODO
     }
 
 }

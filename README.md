@@ -25,9 +25,17 @@ Reimplementation of the original v1-AudioController with similar UI, but new Lin
 
 **If Problems still occur check the [_Troubleshooting-Wiki_](https://github.com/Fazecast/jSerialComm/wiki/Troubleshooting)** of the [USB-Library](https://github.com/Fazecast/jSerialComm)
 
-### Windows
+### Windows (***!! Currently Not Working !!***)
 
-Pyhton-Script needs **additional modules**. Just try to run in console, see what's missing and install it via `pip`😅🤦
+
+
+1. Pyhton-Script needs **additional modules**. Just try to run in console, see what's missing and install it via `pip`😅🤦
+
+2. Create those Folders and put the `pycaw`-Folder and `WinAudioControl.py` in the `Python`-Folder
+   > AudioController.jar <br>
+   > > AudioController/Python/ <br>
+   > > *--put pycaw and script in here--*
+
 
 *Autoinstall of modules in Python-Script comming soon...*
 
@@ -38,5 +46,6 @@ Pyhton-Script needs **additional modules**. Just try to run in console, see what
 
 ## TODO
 
-* **Linux is work in Progress**
-* reimplement **Windows**
+* implement **communication** between `UI` and `AudioManager`
+* reimplement **Windows**-Python-Script into `AudioControllerWin`
+* implement **Windows**-Python-Install that installs all Python-Modules

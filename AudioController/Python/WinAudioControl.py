@@ -25,22 +25,17 @@ def mainLoop():
 def processMessage(message):
     number = ""
     processName = ""
-    isSplitter = False
     hasBeenEnd = False
 
     for c in message[::-1]:
-        if c.__eq__(">") and (not isSplitter) and (not hasBeenEnd):
-            isSplitter = True
+        if c.__eq__("|") and (not hasBeenEnd):
             hasBeenEnd = True
 
         if not hasBeenEnd:
             number = c + number
 
-        if (not isSplitter) and hasBeenEnd:
+        if hasBeenEnd:
             processName = c + processName
-
-        if c.__eq__("|") and isSplitter:
-            isSplitter = False
 
     numNew = 0.0
     isFloat = True
@@ -72,15 +67,15 @@ def outputAudioInfo():
     for session in sessions:
         volume = session._ctl.QueryInterface(pycaw.ISimpleAudioVolume)
         if session.Process:
-            print("[PAC]::AudioProcess[" + str(session.Process.name()).replace("[", "^<<^").replace("]", "^>>^") + "|=>"
+            print("ap[" + str(session.Process.name()).replace("[", "^<<^").replace("]", "^>>^") + "|"
                   + str(volume.GetMasterVolume()) + "]") # PAC = PythonAudioControl
 
 
 def getProtocolMessage(input):
-    if str(input).startswith("[PAC]::AudioProcess[") and str(input).endswith("]"):
+    if str(input).startswith("ap[") and str(input).endswith("]"):
         s = input[20:-1]
         return str(s).replace("^<<^", "[").replace("^>>^", "]")
-    elif str(input).__eq__("[PAC]::request[exit]"):
+    elif str(input).__eq__("apr[exit]"): # AudioProtocolRequest
         outputAudioInfo()
         sys.exit()
         return exit
