@@ -1,5 +1,9 @@
 package ooo.paulsen;
 
+import ooo.paulsen.io.serial.PSerialConnection;
+import ooo.paulsen.ui.*;
+
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -7,13 +11,6 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.File;
 import java.util.ArrayList;
-
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-
-import ooo.paulsen.io.serial.PSerialConnection;
-import ooo.paulsen.ui.*;
 
 public class UI {
 
@@ -471,6 +468,19 @@ public class UI {
                 serialButton.setBounds((int) (w / 2 + textHeight * 2.8f), space, (int) (w / 2 - textHeight * 2.8f - bHeight - space), bHeight - space);
             }
         });
+    }
+
+    public void updateControlList(){
+        ArrayList<PUIElement> elems = new ArrayList<>();
+
+        for(Control c : Main.controls){
+            PUIElement e = new PUIElement(f);
+            // TODO create custom Element
+        }
+
+        // refresh List
+        audioControlUI.clearElements();
+        audioControlUI.addAllElements(elems);
     }
 
     /**

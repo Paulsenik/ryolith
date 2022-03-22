@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import ooo.paulsen.io.*;
 import ooo.paulsen.audiocontrol.AudioManager;
@@ -24,6 +25,8 @@ public class Main {
 
     public static UI ui;
     public static AudioManager am;
+
+    public static CopyOnWriteArrayList<Control> controls = new CopyOnWriteArrayList<>();
 
     // Only private to not accidentally be instanced
     private Main() {
@@ -53,6 +56,7 @@ public class Main {
             JOptionPane.showMessageDialog(null, e.getMessage(), "Startup-Error", JOptionPane.ERROR_MESSAGE);
             System.exit(0);
         }
+
         ui = new UI();
 
         try {
@@ -72,6 +76,12 @@ public class Main {
             }
         }, 0, 10 * 60 * 1000);
 
+    }
+
+    public static void setControlVolume(String controlName, float volume) {
+        for (Control c : controls)
+            if (c != null && c.getName().equals(controlName))
+                c.setVolume(volume);
     }
 
     public static void initVariables() {

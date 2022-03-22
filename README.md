@@ -44,8 +44,12 @@ Reimplementation of the original v1-AudioController with similar UI, but new Lin
 
 * Import latest build of [Java-Project-Library](https://github.com/realPaulsen/Java-Project-Library) into Project before building
 
-## TODO
+## TODOs
 
-* implement **communication** between `UI` and `AudioManager`
-* reimplement **Windows**-Python-Script into `AudioControllerWin`
-* implement **Windows**-Python-Install that installs all Python-Modules
+* Implement **communication** between `UI` and `AudioManager`
+* Fix **linux-system-tray-icon** showing up with white background and wrong size
+* **Optimize** updateProcesses in `AudioControllerLinux`
+* Implement **save-system**
+* Add **clearProcesses** to `UI`, `AudioManager` & `AudioController`
+* Reimplement **Windows**-Python-Script into `AudioControllerWin`
+* Implement **Windows-Python-Install** that installs all Python-Modules

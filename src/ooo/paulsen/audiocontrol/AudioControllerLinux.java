@@ -24,6 +24,10 @@ public class AudioControllerLinux extends AudioController {
             throw new Exception("The AudioController might no be installed/set up correctly\nDetected OS: " + PSystem.getOSType() + "\nRunning \"pactl stat\" returns ERROR!");
     }
 
+    /*
+     * TODO - Optimize by signaling (with a boolean) another Timer-Thread to refresh the processes
+     * Timer checks every 1-3 Seconds if he should refresh
+     */
     @Override
     public synchronized boolean refreshProcesses() {
         String out = PConsole.run("pactl list sink-inputs");
