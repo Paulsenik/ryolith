@@ -7,11 +7,22 @@ public class Control {
     private CopyOnWriteArrayList<Group> groups = new CopyOnWriteArrayList<>();
     private String name;
 
+    private float volume;
+
     public Control(String name) {
         this.name = name;
     }
 
+    /**
+     * // TODO - use for save-system
+     */
+    public Control(String name, float volume) {
+        this.name = name;
+        this.volume = volume; // startvolume
+    }
+
     public void setVolume(float volume) {
+        this.volume = volume;
         for (Group g : groups)
             g.setVolume(volume);
     }
@@ -33,6 +44,10 @@ public class Control {
 
     public String getName() {
         return name;
+    }
+
+    public float getVolume() {
+        return volume;
     }
 
 }

@@ -102,7 +102,6 @@ public class AudioManager {
                     try {
                         float controlVolume = (float) Math.min(Math.max(Integer.parseInt(volumeInt), 0), 1000) / 1000;
 
-                        System.out.println("name: " + controlName + " float: " + controlVolume);
                         Main.setControlVolume(controlName, controlVolume);
                     } catch (NumberFormatException e) {
                     }

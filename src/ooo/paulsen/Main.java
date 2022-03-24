@@ -4,12 +4,14 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import ooo.paulsen.io.*;
 import ooo.paulsen.audiocontrol.AudioManager;
+import ooo.paulsen.ui.UI;
 
 import javax.swing.*;
 
@@ -26,7 +28,7 @@ public class Main {
     public static UI ui;
     public static AudioManager am;
 
-    public static CopyOnWriteArrayList<Control> controls = new CopyOnWriteArrayList<>();
+    private static CopyOnWriteArrayList<Control> controls = new CopyOnWriteArrayList<>();
 
     // Only private to not accidentally be instanced
     private Main() {
@@ -48,6 +50,14 @@ public class Main {
                 System.setErr(out);
             } catch (FileNotFoundException e) {
             }
+        } else {
+
+            // TODO - DEMO - Should be removed
+            addControl("CTRL0");
+
+            Group g = new Group("TestGroup");
+            g.addProcess("Brave");
+            getControl("CTRL0").addGroup(g);
         }
 
         try {
@@ -75,13 +85,41 @@ public class Main {
                 saveVariables();
             }
         }, 0, 10 * 60 * 1000);
+    }
 
+    public static void addControl(String name) {
+        controls.add(new Control(name));
+        if (ui != null)
+            ui.updateControlList();
+    }
+
+    public static void removeControl(String name) {
+        for (Control c : controls)
+            if (c != null && c.getName().equals(name)) {
+                controls.remove(c);
+                if (ui != null)
+                    ui.updateControlList();
+                return;
+            }
+    }
+
+    public static Control getControl(String name) {
+        for (Control c : controls)
+            if (c != null && c.getName().equals(name))
+                return c;
+        return null;
+    }
+
+    public static List<Control> getControls() {
+        return controls;
     }
 
     public static void setControlVolume(String controlName, float volume) {
         for (Control c : controls)
-            if (c != null && c.getName().equals(controlName))
+            if (c != null && c.getName().equals(controlName)) {
                 c.setVolume(volume);
+                ui.f.repaint();
+            }
     }
 
     public static void initVariables() {

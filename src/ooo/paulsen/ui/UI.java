@@ -1,7 +1,9 @@
-package ooo.paulsen;
+package ooo.paulsen.ui;
 
+import ooo.paulsen.Control;
+import ooo.paulsen.Main;
 import ooo.paulsen.io.serial.PSerialConnection;
-import ooo.paulsen.ui.*;
+import ooo.paulsen.ui.core.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -107,6 +109,8 @@ public class UI {
         initSystemTray();
         initElements();
         initUpdate();
+
+        updateControlList();
 
         f.updateElements();
         hasInit = true;
@@ -367,6 +371,8 @@ public class UI {
             @Override
             public void paint(Graphics2D g, int x, int y, int w, int h) {
 
+                updateRotaryControls();
+
                 g.setFont(new Font("Arial", Font.PLAIN, bHeight / 2));
 
                 // Top-Bar
@@ -426,7 +432,7 @@ public class UI {
                     audioControlUI.setBounds(space, bHeight + space + textHeight, w - space * 2, h - space * 2 - bHeight - textHeight);
                     audioControlUI.setSliderWidth(h / 20);
                     audioControlUI.updateElements();
-                    audioControlUI.runAllValueUpdateActions();
+                    // //
 
                     addAudioControlB.setBounds(w - space - textHeight, bHeight + space, textHeight, textHeight);
 
@@ -470,37 +476,31 @@ public class UI {
         });
     }
 
-    public void updateControlList(){
+    public synchronized void updateControlList() {
         ArrayList<PUIElement> elems = new ArrayList<>();
 
-        for(Control c : Main.controls){
-            PUIElement e = new PUIElement(f);
-            // TODO create custom Element
+        for (Control c : Main.getControls()) {
+            elems.add(new ControlElement(c.getName(), f));
         }
 
         // refresh List
         audioControlUI.clearElements();
         audioControlUI.addAllElements(elems);
+
+        f.updateElements();
     }
 
-    /**
-     * Creates a popup-window which lets u choose one of the Options
-     *
-     * @param title
-     * @param comboBoxInput String-Array of Options
-     * @return index from 0 to comboBoxInput.length
-     */
-    public int getUserSelection(String title, String comboBoxInput[]) {
-        JComboBox<String> box = new JComboBox<>(comboBoxInput);
-        JOptionPane.showMessageDialog(f, box, title, JOptionPane.QUESTION_MESSAGE);
-        return box.getSelectedIndex();
-    }
+    public synchronized void updateRotaryControls() {
 
-    public int getUserSelection(String title, ArrayList<String> comboBoxInput) {
-        String s[] = new String[comboBoxInput.size()];
-        for (int i = 0; i < s.length; i++)
-            s[i] = comboBoxInput.get(i);
-        return getUserSelection(title, s);
+        for (PUIElement e : audioControlUI.getElements()) {
+
+            ControlElement ce = ((ControlElement) e);
+            Control c = Main.getControl(ce.getName());
+
+            if (c != null) {
+                ce.updateRotaryValue(c.getVolume());
+            }
+        }
     }
 
 }

@@ -1,4 +1,4 @@
-# AudioController ![Beta](https://img.shields.io/badge/Status-Beta-yellow)
+# AudioController ![Beta](https://img.shields.io/badge/Status-Beta-yellow) ![Lines of code](https://img.shields.io/tokei/lines/github/realPaulsen/AudioController)
 Controls audio of different processes (Can connect to Serial/Arduino)
 
 Currently in **Beta-Version b2**<br>

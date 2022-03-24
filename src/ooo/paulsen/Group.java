@@ -9,6 +9,12 @@ public class Group {
 
     private CopyOnWriteArrayList<String> processes = new CopyOnWriteArrayList<>();
 
+    private String name;
+
+    public Group(String name) {
+        this.name = name;
+    }
+
     public void setVolume(float volume) {
         for (String process : processes)
             Main.am.setVolume(process, volume);
@@ -31,6 +37,10 @@ public class Group {
 
     public boolean hasProcess(String processName) {
         return processes.contains(processName);
+    }
+
+    public String getName() {
+        return name;
     }
 
 }

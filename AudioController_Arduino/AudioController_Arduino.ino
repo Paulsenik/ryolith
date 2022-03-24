@@ -131,9 +131,9 @@ void muteAction(int i) {
 }
 
 void sendValue(int index, int value){
-  Serial.print("am[CTRL");
+  Serial.print("ac[A");
   Serial.print(index);
-  Serial.print("|=>");
+  Serial.print("|");
   Serial.print(value);
   Serial.println("]");
 
