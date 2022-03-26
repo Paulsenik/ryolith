@@ -53,7 +53,10 @@ public class Main {
         } else {
 
             // TODO - DEMO - Should be removed
-            addControl("CTRL0");
+            createControl("CTRL0");
+
+            new Group("TestGroupxy");
+            new Group("TestGroupasdf");
 
             Group g = new Group("TestGroup");
             g.addProcess("Brave");
@@ -87,7 +90,7 @@ public class Main {
         }, 0, 10 * 60 * 1000);
     }
 
-    public static void addControl(String name) {
+    public static void createControl(String name) {
         controls.add(new Control(name));
         if (ui != null)
             ui.updateControlList();
@@ -112,6 +115,37 @@ public class Main {
 
     public static List<Control> getControls() {
         return controls;
+    }
+
+    public static void createGroup(String name) {
+        if (name != null)
+            new Group(name);
+
+        if (ui != null)
+            ui.updateGroupList();
+    }
+
+    public static void removeGroup(String name) {
+        for (int i = 0; i < Group.groups.size(); i++) {
+            Group g = Group.groups.get(i);
+            if (g != null && g.getName().equals(name)) {
+
+                // remove from index
+                Group.groups.remove(g);
+
+                // remove this Group from all Controlls
+                for (Control c : controls) {
+                    c.removeGroup(g);
+                }
+
+                if (ui != null) {
+                    ui.updateControlList();
+                    ui.updateGroupList();
+                }
+
+                return;
+            }
+        }
     }
 
     public static void setControlVolume(String controlName, float volume) {

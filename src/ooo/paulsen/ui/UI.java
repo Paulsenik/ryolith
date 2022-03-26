@@ -1,6 +1,7 @@
 package ooo.paulsen.ui;
 
 import ooo.paulsen.Control;
+import ooo.paulsen.Group;
 import ooo.paulsen.Main;
 import ooo.paulsen.io.serial.PSerialConnection;
 import ooo.paulsen.ui.core.*;
@@ -110,7 +111,20 @@ public class UI {
         initElements();
         initUpdate();
 
+        for (int i = 0; i < 20; i++) {
+            PUIElement e = new PUIText(f, "" + i);
+            e.addActionListener(new PUIAction() {
+                @Override
+                public void run(PUIElement puiElement) {
+                    System.out.println(((PUIText) puiElement).getText());
+                }
+            });
+            processPanel.addElement(e);
+        }
+
         updateControlList();
+        updateGroupList();
+        udpateProcessList();
 
         f.updateElements();
         hasInit = true;
@@ -486,6 +500,102 @@ public class UI {
         // refresh List
         audioControlUI.clearElements();
         audioControlUI.addAllElements(elems);
+
+        f.updateElements();
+    }
+
+    public synchronized void updateGroupList() {
+        ArrayList<PUIElement> elems = new ArrayList<>();
+
+        for (Group g : Group.groups) {
+            PUIText t = new PUIText(f, g.getName()) {
+                @Override
+                public void draw(Graphics2D g) {
+                    if ((boolean) getMetadata() == false) {
+                        setBackgroundColor(new Color(210, 150, 53));
+                    } else {
+                        setBackgroundColor(new Color(45, 155, 45));
+                    }
+                    super.draw(g);
+                }
+            };
+
+            t.setMetadata(false); // here, metadata represents if it's selected in the UI
+
+            t.addActionListener(new PUIAction() {
+                @Override
+                public void run(PUIElement that) {
+
+                    for (PUIElement e : groupPanel.getElements())
+                        if (e != that)
+                            e.setMetadata(false);
+
+                    that.setMetadata(!(boolean) (that.getMetadata()));
+                    System.out.println("Click on Group : " + ((PUIText) that).getText() + " selected = " + that.getMetadata());
+
+                    f.repaint();
+                }
+            });
+
+            elems.add(t);
+        }
+
+        // refresh List
+        groupPanel.clearElements();
+        groupPanel.addAllElements(elems);
+
+        f.updateElements();
+    }
+
+    public synchronized void udpateProcessList() {
+        ArrayList<PUIElement> elems = new ArrayList<>();
+
+        for (Group g : Group.groups) {
+            for (String process : g.getProcesses()) {
+                PUIElement e = new PUIText(f, process) {
+                    @Override
+                    public void draw(Graphics2D g) {
+                        // TODO - change color according to selected Group
+                        super.draw(g);
+                    }
+                };
+
+                e.addActionListener(new PUIAction() {
+                    @Override
+                    public void run(PUIElement puiElement) {
+                        System.out.println("Clicked " + ((PUIText) puiElement).getText());
+                        // TODO
+                    }
+                });
+
+                elems.add(e);
+            }
+        }
+
+        if (Main.am.getProcesses() != null)
+            for (String process : Main.am.getProcesses()) {
+                PUIElement e = new PUIText(f, process) {
+                    @Override
+                    public void draw(Graphics2D g) {
+                        // TODO - change color according to selected Group
+                        super.draw(g);
+                    }
+                }; 
+
+                e.addActionListener(new PUIAction() {
+                    @Override
+                    public void run(PUIElement puiElement) {
+                        System.out.println("Clicked " + ((PUIText) puiElement).getText());
+                        // TODO
+                    }
+                });
+
+                elems.add(e);
+            }
+
+        // refresh List
+        processPanel.clearElements();
+        processPanel.addAllElements(elems);
 
         f.updateElements();
     }

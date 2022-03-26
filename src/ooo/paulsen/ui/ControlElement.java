@@ -25,6 +25,8 @@ public class ControlElement extends PUIElement {
 
     private void init() {
         removeControl = new PUIElement(getFrame(), getInteractionLayer() + 1);
+        removeControl.doPaintOverOnHover(false);
+        removeControl.doPaintOverOnPress(false);
 
         rotaryControl = new PUIRotaryControl(getFrame(), getInteractionLayer() + 1);
         rotaryControl.addValueUpdateAction(new PUIAction() {
@@ -36,6 +38,7 @@ public class ControlElement extends PUIElement {
         });
         rotaryControl.doPaintOverOnHover(false);
         rotaryControl.doPaintOverOnPress(false);
+        rotaryControl.setValue_NoUpdate(0f);
 
         groups = new PUIScrollPanel(getFrame(), getInteractionLayer() + 1);
         groups.setShowedElements(3);
@@ -45,6 +48,9 @@ public class ControlElement extends PUIElement {
         addGroup = new PUIElement(getFrame(), getInteractionLayer() + 1) {
             @Override
             public synchronized void draw(Graphics2D g) {
+                if (!isEnabled())
+                    return;
+
                 super.draw(g);
 
                 int space = Math.min(w, h) / 6;
@@ -82,6 +88,7 @@ public class ControlElement extends PUIElement {
     public synchronized void draw(Graphics2D g) {
         if (!isEnabled())
             return;
+
         super.draw(g);
 
         Shape c = g.getClip();
