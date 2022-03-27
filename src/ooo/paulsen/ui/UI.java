@@ -14,6 +14,7 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public class UI {
 
@@ -124,7 +125,7 @@ public class UI {
 
         updateControlList();
         updateGroupList();
-        udpateProcessList();
+        updateProcessList();
 
         f.updateElements();
         hasInit = true;
@@ -301,7 +302,16 @@ public class UI {
         addAudioControlB.addActionListener(new PUIAction() {
             @Override
             public void run(PUIElement that) {
-                System.out.println("TODO - addAudioControl");
+                String input = f.getUserInput("Input Control-Name", "");
+
+                if (Main.getControl(input) != null) {
+                    f.sendUserWarning("Control \"" + input + "\" already exists!");
+                    return;
+                }
+
+                if (input != null && !input.isEmpty()) {
+                    Main.createControl(input);
+                }
             }
         });
 
@@ -318,7 +328,20 @@ public class UI {
         addGroupB.addActionListener(new PUIAction() {
             @Override
             public void run(PUIElement that) {
-                System.out.println("TODO - add Group");
+
+                String input = f.getUserInput("Create a new Group:", "Group1");
+                if(input == null)
+                    return;
+
+                if (Group.getGroup(input) != null) {
+                    f.sendUserWarning("Group \"" + input + "\" already exists!");
+                    return;
+                }
+
+                new Group(input);
+
+                updateGroupList();
+
             }
         });
         addGroupB.setDraw(addAudioControlB.getDraw());
@@ -349,7 +372,8 @@ public class UI {
         refreshProcessesB.addActionListener(new PUIAction() {
             @Override
             public void run(PUIElement puiElement) {
-                System.out.println("TODO - refresh Processes");
+                Main.am.refreshProcesses();
+                updateProcessList();
             }
         });
         refreshProcessesB.setDraw(new PUIPaintable() {
@@ -547,51 +571,35 @@ public class UI {
         f.updateElements();
     }
 
-    public synchronized void udpateProcessList() {
-        ArrayList<PUIElement> elems = new ArrayList<>();
+    public synchronized void updateProcessList() {
+        HashSet<String> processSet = new HashSet<>();
 
-        for (Group g : Group.groups) {
-            for (String process : g.getProcesses()) {
-                PUIElement e = new PUIText(f, process) {
-                    @Override
-                    public void draw(Graphics2D g) {
-                        // TODO - change color according to selected Group
-                        super.draw(g);
-                    }
-                };
-
-                e.addActionListener(new PUIAction() {
-                    @Override
-                    public void run(PUIElement puiElement) {
-                        System.out.println("Clicked " + ((PUIText) puiElement).getText());
-                        // TODO
-                    }
-                });
-
-                elems.add(e);
-            }
-        }
+        for (Group g : Group.groups)
+            processSet.addAll(g.getProcesses());
 
         if (Main.am.getProcesses() != null)
-            for (String process : Main.am.getProcesses()) {
-                PUIElement e = new PUIText(f, process) {
-                    @Override
-                    public void draw(Graphics2D g) {
-                        // TODO - change color according to selected Group
-                        super.draw(g);
-                    }
-                }; 
+            processSet.addAll(Main.am.getProcesses());
 
-                e.addActionListener(new PUIAction() {
-                    @Override
-                    public void run(PUIElement puiElement) {
-                        System.out.println("Clicked " + ((PUIText) puiElement).getText());
-                        // TODO
-                    }
-                });
+        ArrayList<PUIElement> elems = new ArrayList<>();
+        for (String process : processSet) {
+            PUIElement e = new PUIText(f, process) {
+                @Override
+                public void draw(Graphics2D g) {
+                    // TODO - change color according to selected Group
+                    super.draw(g);
+                }
+            };
 
-                elems.add(e);
-            }
+            e.addActionListener(new PUIAction() {
+                @Override
+                public void run(PUIElement puiElement) {
+                    System.out.println("Clicked " + ((PUIText) puiElement).getText());
+                    // TODO
+                }
+            });
+
+            elems.add(e);
+        }
 
         // refresh List
         processPanel.clearElements();

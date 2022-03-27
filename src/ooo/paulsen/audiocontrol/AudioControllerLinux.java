@@ -3,6 +3,7 @@ package ooo.paulsen.audiocontrol;
 import ooo.paulsen.utils.PConsole;
 import ooo.paulsen.utils.PSystem;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
@@ -135,8 +136,8 @@ public class AudioControllerLinux extends AudioController {
     }
 
     @Override
-    public synchronized String[] getProcesses() {
-        return (String[]) processes.keySet().toArray();
+    public synchronized ArrayList<String> getProcesses() {
+        return new ArrayList(processes.keySet());
     }
 
     @Override

@@ -10,6 +10,13 @@ public class Group {
 
     public static CopyOnWriteArrayList<Group> groups = new CopyOnWriteArrayList<>();
 
+    public static Group getGroup(String s) {
+        for (Group g : groups)
+            if (g.getName().equals(s))
+                return g;
+        return null;
+    }
+
     private CopyOnWriteArrayList<String> processes = new CopyOnWriteArrayList<>();
 
     private String name;

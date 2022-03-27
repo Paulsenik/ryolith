@@ -9,6 +9,8 @@ import ooo.paulsen.utils.PSystem.OSType;
 
 import javax.swing.*;
 import java.awt.datatransfer.UnsupportedFlavorException;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Locale;
 
 public class AudioManager {
@@ -21,7 +23,7 @@ public class AudioManager {
 
     // AudioControl
     private AudioController controller;
-    private String[] processes;
+    private ArrayList<String> processes = new ArrayList<>();
 
     // Performancetest
     public static void main(String[] args) throws Exception {
@@ -76,7 +78,7 @@ public class AudioManager {
         listener = new PSerialListener() {
             @Override
             public void readLine(String s) {
-                System.out.println(System.currentTimeMillis() + " Incomming from " + serial.getPortName() + ": " + s);
+//                System.out.println(System.currentTimeMillis() + " Incomming from " + serial.getPortName() + ": " + s);
 
                 String message1 = audioControlProtocol_NEW.getMessage(s); // new Arduino-Software
                 String message2 = audioControlProtocol_OLD.getMessage(s); // old Arduino-Software (deprecated)
@@ -135,7 +137,7 @@ public class AudioManager {
         controller.setVolume(process, volume);
     }
 
-    public String[] getProcesses() {
+    public ArrayList<String> getProcesses() {
         return processes;
     }
 

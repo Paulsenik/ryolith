@@ -55,12 +55,9 @@ public class Main {
             // TODO - DEMO - Should be removed
             createControl("CTRL0");
 
-            new Group("TestGroupxy");
-            new Group("TestGroupasdf");
 
             Group g = new Group("TestGroup");
             g.addProcess("Brave");
-            getControl("CTRL0").addGroup(g);
         }
 
         try {

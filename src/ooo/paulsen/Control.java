@@ -1,5 +1,6 @@
 package ooo.paulsen;
 
+import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Control {
@@ -38,8 +39,8 @@ public class Control {
         return groups.remove(g);
     }
 
-    public String[] getGroups() {
-        return (String[]) groups.toArray();
+    public ArrayList<Group> getGroups() {
+        return new ArrayList<>(groups);
     }
 
     public String getName() {

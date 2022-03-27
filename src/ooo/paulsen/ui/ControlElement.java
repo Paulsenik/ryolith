@@ -1,10 +1,13 @@
 package ooo.paulsen.ui;
 
+import ooo.paulsen.Control;
+import ooo.paulsen.Group;
 import ooo.paulsen.Main;
 import ooo.paulsen.ui.core.PUIAction;
 import ooo.paulsen.ui.core.PUIFrame;
 
 import java.awt.*;
+import java.util.ArrayList;
 
 public class ControlElement extends PUIElement {
 
@@ -21,10 +24,38 @@ public class ControlElement extends PUIElement {
         this.name = name;
 
         init();
+        updateGroupList();
     }
 
     private void init() {
-        removeControl = new PUIElement(getFrame(), getInteractionLayer() + 1);
+        removeControl = new PUIElement(getFrame(), getInteractionLayer() + 1) {
+            @Override
+            public synchronized void draw(Graphics2D g) {
+                if (!isEnabled())
+                    return;
+
+                super.draw(g);
+
+                int space = Math.min(w, h) / 6;
+
+                g.setColor(Color.white);
+                g.fillRect(x + space, y + h / 2 - space / 2, w - space * 2, space);
+            }
+        };
+        removeControl.setMetadata(this); // set this ControlElement as reference for the ActionListeners
+        removeControl.addActionListener(new PUIAction() {
+            @Override
+            public void run(PUIElement that) {
+                ControlElement c = (ControlElement) that.getMetadata();
+
+                if (!c.getName().isEmpty()) {
+
+                    if (getUserConfirm("Do you want to delete " + c.getName() + " ?", "Delete")) {
+                        Main.removeControl(c.getName());
+                    }
+                }
+            }
+        });
         removeControl.doPaintOverOnHover(false);
         removeControl.doPaintOverOnPress(false);
 
@@ -60,16 +91,89 @@ public class ControlElement extends PUIElement {
                 g.fillRect(x + w / 2 - space / 2, y + space, space, h - space * 2);
             }
         };
+        addGroup.setMetadata(this); // set this ControlElement as reference for the ActionListeners
         addGroup.addActionListener(new PUIAction() {
             @Override
-            public void run(PUIElement puiElement) {
-                System.out.println("add Group button");
+            public void run(PUIElement that) {
+
+                Control c = Main.getControl(name);
+                if (c == null) {
+                    sendUserError("This Control doesn't exist!");
+                    return;
+                }
+
+                ArrayList<String> groupNames = new ArrayList<>();
+                groupNames.add(" ");
+                for (Group g : Group.groups) {
+                    if (!c.getGroups().contains(g)) // can't add Group if the Control already has it
+                        groupNames.add(g.getName());
+                }
+
+                if (groupNames.size() == 1) {
+                    sendUserInfo("No more Groups available");
+                    return;
+                }
+
+                int selectedIndex = getUserSelection("Select a Group", groupNames);
+
+                if (selectedIndex == 0)
+                    return;
+
+                boolean b = getUserConfirm("Add Group: " + groupNames.get(selectedIndex) + "?", "Control: " + name);
+
+                if (b) {
+                    c.addGroup(Group.getGroup(groupNames.get(selectedIndex)));
+                }
+                updateGroupList();
+
             }
         });
         addGroup.doPaintOverOnHover(false);
         addGroup.doPaintOverOnPress(false);
     }
 
+    public void updateGroupList() {
+
+        Control c = Main.getControl(name);
+        if (c == null) {
+            sendUserError("This Control doesn't exist!");
+            return;
+        }
+
+        ArrayList<String> groupNames = new ArrayList<>();
+        for (Group g : Group.groups) {
+            if (c.getGroups().contains(g)) // can't add Group if the Control already has it
+                groupNames.add(g.getName());
+        }
+
+        ArrayList<PUIElement> elems = new ArrayList<>();
+        for (String s : groupNames) {
+            PUIText t = new PUIText(frame, s);
+
+            t.setMetadata(this); // here, metadata represents if it's selected in the UI
+
+            t.addActionListener(new PUIAction() {
+                @Override
+                public void run(PUIElement that) {
+
+                    // Remove
+                    boolean b = getUserConfirm("Really remove \"" + ((PUIText) that).getText() + "\" from " + name + " ?", "Control");
+                    if (b) {
+                        Control c = Main.getControl(name);
+                        c.removeGroup(Group.getGroup(((PUIText) that).getText()));
+                        updateGroupList();
+                    }
+
+                }
+            });
+
+            elems.add(t);
+        }
+
+        // refresh List
+        groups.clearElements();
+        groups.addAllElements(elems);
+    }
 
     public void updateRotaryValue(float f) {
         if (f != lastVolume) {
@@ -132,6 +236,7 @@ public class ControlElement extends PUIElement {
 
     @Override
     public void setEnabled(boolean enabled) {
+        super.setEnabled(enabled);
         removeControl.setEnabled(enabled);
         rotaryControl.setEnabled(enabled);
         addGroup.setEnabled(enabled);
@@ -145,6 +250,16 @@ public class ControlElement extends PUIElement {
         rotaryControl.setLayer(l + 1);
         addGroup.setLayer(l + 1);
         groups.setLayer(l + 1);
+    }
+
+    @Override
+    public void release() {
+        super.release();
+        // remove all child-elements from frame as well
+        frame.remove(removeControl);
+        frame.remove(rotaryControl);
+        frame.remove(addGroup);
+        frame.remove(groups);
     }
 
 }

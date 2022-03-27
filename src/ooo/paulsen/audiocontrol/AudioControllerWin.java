@@ -1,5 +1,7 @@
 package ooo.paulsen.audiocontrol;
 
+import java.util.ArrayList;
+
 public class AudioControllerWin extends AudioController {
 
     public AudioControllerWin() throws Exception {
@@ -13,8 +15,8 @@ public class AudioControllerWin extends AudioController {
     }
 
     @Override
-    public synchronized String[] getProcesses() {
-        return new String[0];
+    public synchronized ArrayList<String> getProcesses() {
+        return null;
     }
 
     @Override

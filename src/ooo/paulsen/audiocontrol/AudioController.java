@@ -116,7 +116,7 @@ public abstract class AudioController {
     /**
      * @return all audio-processes the OS can find (stored in Controller as variable)
      */
-    public abstract String[] getProcesses();
+    public abstract ArrayList<String> getProcesses();
 
     /**
      * Sets the volume of the given Process if it's available<br>
