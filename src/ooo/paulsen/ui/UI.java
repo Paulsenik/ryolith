@@ -79,6 +79,7 @@ public class UI {
     // important changing variables
     private boolean isSettings = false;
     private int bHeight, space, textHeight;
+    private String selectedGroup = null;
 
     public UI() {
 
@@ -330,7 +331,7 @@ public class UI {
             public void run(PUIElement that) {
 
                 String input = f.getUserInput("Create a new Group:", "Group1");
-                if(input == null)
+                if (input == null)
                     return;
 
                 if (Group.getGroup(input) != null) {
@@ -350,7 +351,13 @@ public class UI {
         removeGroupB.addActionListener(new PUIAction() {
             @Override
             public void run(PUIElement that) {
-                System.out.println("TODO - remove Group");
+                if (selectedGroup != null) {
+                    if (f.getUserConfirm("Remove \"" + selectedGroup + "\" ?", "Group")) {
+                        Main.removeGroup(selectedGroup);
+                        selectedGroup = null;
+                        updateGroupList();
+                    }
+                }
             }
         });
         removeGroupB.setDraw(new PUIPaintable() {
@@ -536,9 +543,9 @@ public class UI {
                 @Override
                 public void draw(Graphics2D g) {
                     if ((boolean) getMetadata() == false) {
-                        setBackgroundColor(new Color(210, 150, 53));
+                        setBackgroundColor(new Color(208, 96, 4));
                     } else {
-                        setBackgroundColor(new Color(45, 155, 45));
+                        setBackgroundColor(new Color(37, 175, 4));
                     }
                     super.draw(g);
                 }
@@ -555,6 +562,12 @@ public class UI {
                             e.setMetadata(false);
 
                     that.setMetadata(!(boolean) (that.getMetadata()));
+
+                    if ((boolean) that.getMetadata())
+                        selectedGroup = ((PUIText) that).getText();
+                    else
+                        selectedGroup = null;
+
                     System.out.println("Click on Group : " + ((PUIText) that).getText() + " selected = " + that.getMetadata());
 
                     f.repaint();
@@ -582,19 +595,48 @@ public class UI {
 
         ArrayList<PUIElement> elems = new ArrayList<>();
         for (String process : processSet) {
-            PUIElement e = new PUIText(f, process) {
+            PUIElement e = new PUIText(f, process);
+            e.setDraw(new PUIPaintable() {
                 @Override
-                public void draw(Graphics2D g) {
-                    // TODO - change color according to selected Group
-                    super.draw(g);
+                public void paint(Graphics2D g, int x, int y, int w, int h) {
+                    if (!e.isEnabled())
+                        return;
+
+                    Group group = Group.getGroup(selectedGroup);
+
+                    if (group != null && group.getProcesses().contains(((PUIText) e).getText())) {
+                        g.setColor(new Color(37, 175, 4));
+                    } else {
+                        g.setColor(new Color(208, 96, 4));
+                    }
+
+                    g.fillRect(x, y, w, h);
                 }
-            };
+            });
 
             e.addActionListener(new PUIAction() {
                 @Override
                 public void run(PUIElement puiElement) {
                     System.out.println("Clicked " + ((PUIText) puiElement).getText());
-                    // TODO
+
+                    Group g = Group.getGroup(selectedGroup);
+
+                    if (g != null) {
+                        String name = ((PUIText) puiElement).getText();
+
+                        if (g.getProcesses().contains(name)) { // Group already has this Process
+
+                            if (f.getUserConfirm("Remove \"" + name + "\" ?", "Group: " + g.getName())) {
+                                g.removeProcess(name);
+                                updateProcessList();
+                            }
+
+                        } else {
+                            g.addProcess(name);
+                            updateProcessList();
+                        }
+                    }
+
                 }
             });
 

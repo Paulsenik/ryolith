@@ -114,14 +114,6 @@ public class Main {
         return controls;
     }
 
-    public static void createGroup(String name) {
-        if (name != null)
-            new Group(name);
-
-        if (ui != null)
-            ui.updateGroupList();
-    }
-
     public static void removeGroup(String name) {
         for (int i = 0; i < Group.groups.size(); i++) {
             Group g = Group.groups.get(i);
