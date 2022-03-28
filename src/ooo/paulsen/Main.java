@@ -1,5 +1,11 @@
 package ooo.paulsen;
 
+import ooo.paulsen.audiocontrol.AudioManager;
+import ooo.paulsen.io.PFile;
+import ooo.paulsen.io.PFolder;
+import ooo.paulsen.ui.UI;
+
+import javax.swing.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -8,12 +14,6 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.CopyOnWriteArrayList;
-
-import ooo.paulsen.io.*;
-import ooo.paulsen.audiocontrol.AudioManager;
-import ooo.paulsen.ui.UI;
-
-import javax.swing.*;
 
 /**
  * @author Paul
@@ -35,6 +35,14 @@ public class Main {
     }
 
     public static void main(String[] args) {
+
+        try {
+            readVariables();
+        } catch (Exception e) {
+            e.printStackTrace();
+            PFile.copyFile(SAVEFOLDER + "/consoleOut" + System.currentTimeMillis() + ".txt", SAVEFOLDER + "/error.log", false); // create error-log-file
+            ui.f.sendUserError("An Error Occured!\nPlease check error.log !!!");
+        }
 
         if (!devMode) {
 
@@ -68,15 +76,6 @@ public class Main {
         }
 
         ui = new UI();
-
-        try {
-            initVariables();
-            ui.f.updateElements();
-        } catch (Exception e) {
-            e.printStackTrace();
-            PFile.copyFile(SAVEFOLDER + "/consoleOut.txt", SAVEFOLDER + "/error.log", false); // create error-log-file
-            ui.f.sendUserError("An Error Occured!\nPlease check error.log !!!");
-        }
 
         // AutoSave every 10 minutes
         new Timer().scheduleAtFixedRate(new TimerTask() {
@@ -145,13 +144,6 @@ public class Main {
             }
     }
 
-    public static void initVariables() {
-
-        readVariables();
-
-        System.out.println("[Main] :: initialized variables");
-    }
-
     /**
      * Saves and exits program
      */
@@ -177,6 +169,7 @@ public class Main {
         PFolder.createFolder(SAVEFOLDER + "/" + "Controls");
 
         // TODO
+        System.out.println("[Main] :: variables initialized");
     }
 
 
@@ -188,6 +181,7 @@ public class Main {
         PFolder.createFolder(SAVEFOLDER + "/" + "Controls");
 
         // TODO
+        System.out.println("[Main] :: variables saved");
     }
 
 }

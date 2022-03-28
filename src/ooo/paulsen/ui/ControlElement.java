@@ -64,7 +64,6 @@ public class ControlElement extends PUIElement {
             @Override
             public synchronized void run(PUIElement that) {
                 Main.setControlVolume(name, rotaryControl.getValue());
-                System.out.println("Rotary: " + name + " " + rotaryControl.getValue());
             }
         });
         rotaryControl.doPaintOverOnHover(false);

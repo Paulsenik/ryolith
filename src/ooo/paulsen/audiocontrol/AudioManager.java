@@ -3,15 +3,11 @@ package ooo.paulsen.audiocontrol;
 import com.fazecast.jSerialComm.SerialPortInvalidPortException;
 import ooo.paulsen.Main;
 import ooo.paulsen.io.PCustomProtocol;
-import ooo.paulsen.io.serial.*;
-import ooo.paulsen.utils.*;
-import ooo.paulsen.utils.PSystem.OSType;
+import ooo.paulsen.io.serial.PSerialConnection;
+import ooo.paulsen.io.serial.PSerialListener;
+import ooo.paulsen.utils.PSystem;
 
-import javax.swing.*;
-import java.awt.datatransfer.UnsupportedFlavorException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Locale;
 
 public class AudioManager {
 
@@ -25,25 +21,6 @@ public class AudioManager {
     private AudioController controller;
     private ArrayList<String> processes = new ArrayList<>();
 
-    // Performancetest
-    public static void main(String[] args) throws Exception {
-        AudioManager am = new AudioManager();
-        try {
-            long l = System.currentTimeMillis();
-            for (int i = 0; i <= 1000; i++) { // sets different Volumes for different Processes at the same time they are being processed by the Controller/Terminal
-                am.controller.setVolume("spotify", 0.03f + (float) i / 100000);
-                am.controller.setVolume("Brave", 0.25f + (float) i / 10000);
-            }
-            System.out.println("Average 1-loop-iteration (Ms-Delay): " + (System.currentTimeMillis() - l) / 1000);
-            Thread.sleep(100);
-            System.out.println("Total Terminal-Calls: " + AudioControllerLinux.count);
-            am.stop();
-        } catch (Exception e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(null, "Exception", "Error", JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
     /**
      * @throws Exception when the Controller is not supporting the current Operating-System
      */
@@ -56,6 +33,7 @@ public class AudioManager {
     }
 
     private void initController() throws Exception {
+
         switch (PSystem.getOSType()) {
             case LINUX: {
                 System.out.println("[AudioManager] :: Detected OS: Linux");
@@ -77,7 +55,7 @@ public class AudioManager {
     private void initListener() {
         listener = new PSerialListener() {
             @Override
-            public void readLine(String s) {
+            public synchronized void readLine(String s) {
 //                System.out.println(System.currentTimeMillis() + " Incomming from " + serial.getPortName() + ": " + s);
 
                 String message1 = audioControlProtocol_NEW.getMessage(s); // new Arduino-Software
@@ -101,6 +79,10 @@ public class AudioManager {
                         }
                     }
 
+                    if (Main.getControl(controlName) == null) {
+                        Main.createControl(controlName);
+                    }
+
                     try {
                         float controlVolume = (float) Math.min(Math.max(Integer.parseInt(volumeInt), 0), 1000) / 1000;
 
@@ -120,6 +102,12 @@ public class AudioManager {
                 serial.disconnect();
 
             serial = new PSerialConnection(port);
+            serial.setDisconnectEvent(new Runnable() {
+                @Override
+                public void run() {
+                    Main.ui.updateCurrentSerialConnection();
+                }
+            });
             serial.addListener(listener);
             return serial.connect();
         } catch (SerialPortInvalidPortException e) {
@@ -154,6 +142,12 @@ public class AudioManager {
     public void stop() {
         disconnectSerial();
         controller.stop();
+    }
+
+    public String getPortName() {
+        if (serial != null)
+            return serial.getPortName();
+        return null;
     }
 
     public boolean isSerialConnected() {

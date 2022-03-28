@@ -5,7 +5,9 @@ import ooo.paulsen.Group;
 import ooo.paulsen.Main;
 import ooo.paulsen.io.serial.PSerialConnection;
 import ooo.paulsen.ui.core.*;
+import ooo.paulsen.utils.PSystem;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -13,6 +15,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 
@@ -56,9 +59,12 @@ public class UI {
 
     }
 
-    Image img; // TrayIcon
+    public static final String TITLE = "Audio-Controller";
 
     public PUIFrame f;
+
+    Image img; // TrayIcon
+    TrayIcon trayIcon;
 
     // Top-Bar
     private PUIElement minimizeUI, settingsUI; // bottomButtons
@@ -86,24 +92,21 @@ public class UI {
         // PUI - DarkMODE
         PUIElement.darkUIMode = true;
 
-        f = new PUIFrame("Serial Audio Controller", 1300, 600);
+        f = new PUIFrame(TITLE, 1300, 600);
 
         try {
-
-            if (!new File(Main.SAVEFOLDER + "/Audio.png").exists()) {
-                System.out.println("Couldn't find Application-Image");
-                f.sendUserInfo("Couldn't find Application-Image");
-            } else {
-                img = Toolkit.getDefaultToolkit().getImage(Main.SAVEFOLDER + "/Audio.png");
-            }
-
+            img = ImageIO.read(new File("Audio.png"));
         } catch (SecurityException e) {
             System.out.println("Couldn't set Application-Image");
             f.sendUserInfo("Couldn't set Application-Image");
+        } catch (IOException e) {
+            System.out.println("Couldn't load Application-Image");
+            f.sendUserInfo("Couldn't load Application-Image");
         }
 
-        if (img != null)
+        if (img != null) {
             f.setIconImage(img);
+        }
 
         f.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         f.setMinimumSize(new Dimension(600, 400));
@@ -136,7 +139,6 @@ public class UI {
     public void initSystemTray() {
         if (SystemTray.isSupported()) {
             SystemTray tray = SystemTray.getSystemTray();
-
 
             PopupMenu popup = new PopupMenu();
 
@@ -174,8 +176,10 @@ public class UI {
             popup.add(close);
 
             try {
-                TrayIcon trayIcon = new TrayIcon(img, "Serial Audio Controller", popup);
+                trayIcon = new TrayIcon(img, "Serial Audio Controller", popup);
                 trayIcon.addActionListener(show.getActionListeners()[0]);
+                trayIcon.setToolTip("Audio-Controller");
+                trayIcon.setImageAutoSize(true);
 
                 tray.add(trayIcon);
                 isSystemTrayWorking = true;
@@ -268,8 +272,7 @@ public class UI {
                 }
 
                 if (Main.am.connectToSerial(ports[index])) {
-                    serialButton.setText(ports[index]);
-                    f.updateElements();
+                    updateCurrentSerialConnection();
                 } else {
                     f.sendUserInfo("Could not connect to " + ports[index]);
                 }
@@ -521,6 +524,12 @@ public class UI {
         });
     }
 
+    public synchronized void sendUserPopUp(String title, String message) {
+        if (trayIcon != null && isSystemTrayWorking) {
+            trayIcon.displayMessage(title, message, TrayIcon.MessageType.INFO);
+        }
+    }
+
     public synchronized void updateControlList() {
         ArrayList<PUIElement> elems = new ArrayList<>();
 
@@ -661,6 +670,18 @@ public class UI {
                 ce.updateRotaryValue(c.getVolume());
             }
         }
+    }
+
+    public synchronized void updateCurrentSerialConnection() {
+        if (Main.am.isSerialConnected())
+            serialButton.setText(Main.am.getPortName());
+        else
+            serialButton.setText("-");
+        f.repaint();
+
+        if (PSystem.getOSType() == PSystem.OSType.WINDOWS)
+            sendUserPopUp("testtitle", "updatemessage");
+        // Maybe add library for Linux/Gnome-support
     }
 
 }

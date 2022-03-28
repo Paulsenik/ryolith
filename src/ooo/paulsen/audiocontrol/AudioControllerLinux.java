@@ -1,8 +1,10 @@
 package ooo.paulsen.audiocontrol;
 
+import ooo.paulsen.Main;
 import ooo.paulsen.utils.PConsole;
 import ooo.paulsen.utils.PSystem;
 
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -17,20 +19,20 @@ public class AudioControllerLinux extends AudioController {
 
     private boolean doesPactlExist = false;
 
-    public AudioControllerLinux() throws Exception {
+    public AudioControllerLinux() {
         super();
         doesPactlExist = !PConsole.run("pactl stat").contains("ERROR");
 
         if (!doesPactlExist)
-            throw new Exception("The AudioController might no be installed/set up correctly\nDetected OS: " + PSystem.getOSType() + "\nRunning \"pactl stat\" returns ERROR!");
+            JOptionPane.showMessageDialog(Main.ui.f, "The AudioController might no be installed/set up correctly\nDetected OS: " +
+                    PSystem.getOSType() + "\nRunning \"pactl stat\" returns ERROR!", "Startup-Error", JOptionPane.ERROR_MESSAGE);
     }
 
-    /*
-     * TODO - Optimize by signaling (with a boolean) another Timer-Thread to refresh the processes
-     * Timer checks every 1-3 Seconds if he should refresh
-     */
     @Override
     public synchronized boolean refreshProcesses() {
+        if (!doesPactlExist)
+            return false;
+
         String out = PConsole.run("pactl list sink-inputs");
         if (out.contains("ERROR")) {
             return false;
@@ -102,12 +104,9 @@ public class AudioControllerLinux extends AudioController {
         }
     }
 
-    // TODO - Remove (variable only for test)
-    static long count;
 
     @Override
     protected synchronized void setProcessVolume(String processName, float volume) {
-        count++;
 
         String out = "ERROR";
         if (processes.containsKey(processName)) {
@@ -132,6 +131,9 @@ public class AudioControllerLinux extends AudioController {
      * @return result of Terminal
      */
     private String run(int processID, float volume) {
+        if (!doesPactlExist)
+            return "ERROR";
+
         return PConsole.run("pactl set-sink-input-volume " + processID + " " + volume);
     }
 

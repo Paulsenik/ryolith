@@ -1,8 +1,7 @@
 package ooo.paulsen.audiocontrol;
 
-import ooo.paulsen.utils.PSystem;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public abstract class AudioController {
@@ -39,7 +38,7 @@ public abstract class AudioController {
     /**
      * @throws Exception when controlling is not possible
      */
-    public AudioController() throws Exception {
+    public AudioController() {
         initProcessThread();
     }
 
@@ -86,7 +85,7 @@ public abstract class AudioController {
                     } catch (InterruptedException e) {
                         System.out.println("Stopping Thread...");
                         return;
-                    }catch (ConcurrentModificationException e){
+                    } catch (ConcurrentModificationException e) {
                     }
 
                 }
