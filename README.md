@@ -1,11 +1,16 @@
 # AudioController ![Beta](https://img.shields.io/badge/Status-Beta-yellow) ![Lines of code](https://img.shields.io/tokei/lines/github/realPaulsen/AudioController)
+
+
 Controls audio of different processes (Can connect to Serial/Arduino)
 
 Currently in **Beta-Version b2**<br>
 Reimplementation of the original v1-AudioController with similar UI, but new Linux-Support and a more stable **UI-** and **Serial-Library** 
 
+> *Tip: **Connect an Arduino** to it, so you don't have to tab out of your **Game/Application** to change the volume.*
 
 ## IMPORTANT Usage-Notes:
+
+If you want to edit the configs manually (at your own risk), you can find them **inside a Folder** in your **Home-Directory** at `%HOME%/.jaudiocontroller`
 
 ### Linux
 *Checklist is derived from [jSerialComm-Wiki](https://github.com/Fazecast/jSerialComm/wiki/Troubleshooting)*
@@ -46,6 +51,6 @@ Reimplementation of the original v1-AudioController with similar UI, but new Lin
 
 ## TODOs
 
-* Implement **save-system**
 * Reimplement **Windows**-Python-Script into `AudioControllerWin`
 * Implement **Windows-Python-Install** that installs all Python-Modules
+* add Min- & Max-Values for Processes

@@ -1,19 +1,22 @@
 package ooo.paulsen;
 
 import ooo.paulsen.audiocontrol.AudioManager;
+import ooo.paulsen.io.PDataStorage;
 import ooo.paulsen.io.PFile;
 import ooo.paulsen.io.PFolder;
 import ooo.paulsen.ui.UI;
+import ooo.paulsen.utils.PSystem;
 
 import javax.swing.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
-import java.util.List;
+import java.net.URISyntaxException;
+import java.security.CodeSource;
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * @author Paul
@@ -21,14 +24,13 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public class Main {
 
-    private static final boolean devMode = true;
+    public static final String version = "b2.2.0";
+    private static final boolean devMode = false;
 
-    public static final String SAVEFOLDER = "AudioController";
+    public static final String saveDir = System.getProperty("user.home") + PSystem.getFileSeparator() + ".jaudiocontroller";
 
     public static UI ui;
     public static AudioManager am;
-
-    private static CopyOnWriteArrayList<Control> controls = new CopyOnWriteArrayList<>();
 
     // Only private to not accidentally be instanced
     private Main() {
@@ -36,36 +38,21 @@ public class Main {
 
     public static void main(String[] args) {
 
-        try {
-            readVariables();
-        } catch (Exception e) {
-            e.printStackTrace();
-            PFile.copyFile(SAVEFOLDER + "/consoleOut" + System.currentTimeMillis() + ".txt", SAVEFOLDER + "/error.log", false); // create error-log-file
-            ui.f.sendUserError("An Error Occured!\nPlease check error.log !!!");
-        }
+        PFolder.createFolder(saveDir);
+
+        initVariables();
 
         if (!devMode) {
 
-            if (!new File(SAVEFOLDER).exists())
-                PFolder.createFolder(SAVEFOLDER);
+            PFolder.createFolder(saveDir + PSystem.getFileSeparator() + "Logs");
 
             // Set Console out
-            if (new File(SAVEFOLDER + "/consoleOut.txt").exists())
-                new PFile(SAVEFOLDER + "/consoleOut.txt").delete();
             try {
-                PrintStream out = new PrintStream(new FileOutputStream(SAVEFOLDER + "/consoleOut.txt"));
+                PrintStream out = new PrintStream(new FileOutputStream(saveDir + PSystem.getFileSeparator() + "Logs" + PSystem.getFileSeparator() + "log_" + System.currentTimeMillis()));
                 System.setOut(out);
                 System.setErr(out);
             } catch (FileNotFoundException e) {
             }
-        } else {
-
-            // TODO - DEMO - Should be removed
-            createControl("CTRL0");
-
-
-            Group g = new Group("TestGroup");
-            g.addProcess("Brave");
         }
 
         try {
@@ -77,40 +64,19 @@ public class Main {
 
         ui = new UI();
 
+        // autoconnect
+        if (AudioManager.doAutoConnect && AudioManager.lastPort != null && !AudioManager.lastPort.isEmpty()) {
+            am.connectToSerial(AudioManager.lastPort);
+            ui.updateCurrentSerialConnection();
+        }
+
         // AutoSave every 10 minutes
         new Timer().scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
                 saveVariables();
             }
-        }, 0, 10 * 60 * 1000);
-    }
-
-    public static void createControl(String name) {
-        controls.add(new Control(name));
-        if (ui != null)
-            ui.updateControlList();
-    }
-
-    public static void removeControl(String name) {
-        for (Control c : controls)
-            if (c != null && c.getName().equals(name)) {
-                controls.remove(c);
-                if (ui != null)
-                    ui.updateControlList();
-                return;
-            }
-    }
-
-    public static Control getControl(String name) {
-        for (Control c : controls)
-            if (c != null && c.getName().equals(name))
-                return c;
-        return null;
-    }
-
-    public static List<Control> getControls() {
-        return controls;
+        }, 5 * 60 * 1000, 10 * 60 * 1000);
     }
 
     public static void removeGroup(String name) {
@@ -122,7 +88,7 @@ public class Main {
                 Group.groups.remove(g);
 
                 // remove this Group from all Controlls
-                for (Control c : controls) {
+                for (Control c : Control.getControls()) {
                     c.removeGroup(g);
                 }
 
@@ -137,7 +103,7 @@ public class Main {
     }
 
     public static void setControlVolume(String controlName, float volume) {
-        for (Control c : controls)
+        for (Control c : Control.getControls())
             if (c != null && c.getName().equals(controlName)) {
                 c.setVolume(volume);
                 ui.f.repaint();
@@ -161,26 +127,138 @@ public class Main {
         System.exit(0);
     }
 
-    public static void readVariables() {
+    public static void initVariables() {
 
-        PFolder.createFolder(SAVEFOLDER);
-        PFolder.createFolder(SAVEFOLDER + "/" + "Processes");
-        PFolder.createFolder(SAVEFOLDER + "/" + "Groups");
-        PFolder.createFolder(SAVEFOLDER + "/" + "Controls");
+        // Groups
+        String groupFiles[] = PFolder.getFiles(saveDir + PSystem.getFileSeparator() + "Groups", "cfg");
+        if (groupFiles != null)
+            for (String group : groupFiles) {
+                PDataStorage storage = new PDataStorage();
+                try {
+                    storage.read(group);
+                } catch (IllegalArgumentException e) {
+                    continue;
+                }
 
-        // TODO
+                try {
+                    String name = storage.getString("name");
+                    int processSize = storage.getInteger("ps");
+
+                    Group g = new Group(name);
+                    for (int i = 0; i < processSize; i++) {
+                        String pName = storage.getString("p" + i);
+                        if (pName != null)
+                            g.addProcess(pName);
+                    }
+                } catch (IllegalArgumentException e) {
+                    continue;
+                }
+            }
+
+        // Controls
+        String controlFiles[] = PFolder.getFiles(saveDir + PSystem.getFileSeparator() + "Controls", "cfg");
+        if (controlFiles != null)
+            for (String control : controlFiles) {
+                PDataStorage storage = new PDataStorage();
+                try {
+                    storage.read(control);
+                } catch (IllegalArgumentException e) {
+                    continue;
+                }
+
+                try {
+                    String name = storage.getString("name");
+                    float volume = storage.getFloat("vol");
+
+                    Control c = new Control(name, volume);
+
+                    int groupSize = storage.getInteger("gs");
+
+                    for (int i = 0; i < groupSize; i++) {
+                        String gName = storage.getString("g" + i);
+                        if (gName != null && Group.getGroup(gName) != null)
+                            c.addGroup(Group.getGroup(gName));
+                    }
+                } catch (IllegalArgumentException e) {
+                    continue;
+                }
+
+            }
+
+        if (new File(saveDir + PSystem.getFileSeparator() + "settings.cfg").exists()) {
+            PDataStorage settings = new PDataStorage();
+            try {
+                settings.read(saveDir + PSystem.getFileSeparator() + "settings.cfg");
+
+                try {
+                    AudioManager.doAutoConnect = settings.getBoolean("autoConnect");
+                } catch (IllegalArgumentException e) {
+                }
+
+                try {
+                    AudioManager.lastPort = settings.getString("port");
+                } catch (IllegalArgumentException e) {
+                }
+
+                try {
+                    UI.startMinimized = settings.getBoolean("minimized");
+                } catch (IllegalArgumentException e) {
+                }
+
+            } catch (IllegalArgumentException e) {
+            }
+        }
+
         System.out.println("[Main] :: variables initialized");
     }
 
 
     public static void saveVariables() {
 
-        PFolder.createFolder(SAVEFOLDER);
-        PFolder.createFolder(SAVEFOLDER + "/" + "Processes");
-        PFolder.createFolder(SAVEFOLDER + "/" + "Groups");
-        PFolder.createFolder(SAVEFOLDER + "/" + "Controls");
+        PFolder.createFolder(saveDir + PSystem.getFileSeparator() + "Controls");
+        PFolder.createFolder(saveDir + PSystem.getFileSeparator() + "Groups");
 
-        // TODO
+        // Control
+        int controlCount = 0;
+        for (Control c : Control.getControls()) {
+            PDataStorage storage = new PDataStorage();
+            storage.add("name", c.getName());
+            storage.add("vol", c.getVolume());
+            storage.add("gs", c.getGroups().size());//Group-Size
+
+            ArrayList<Group> groups = c.getGroups();
+            for (int i = 0; i < groups.size(); i++) {
+                storage.add("g" + i, groups.get(i).getName());
+            }
+
+            storage.save(saveDir + PSystem.getFileSeparator() + "Controls" + PSystem.getFileSeparator() + "Control" + controlCount++ + ".cfg");
+        }
+
+        // Group
+        int groupCount = 0;
+        for (Group g : Group.groups) {
+            PDataStorage storage = new PDataStorage();
+            storage.add("name", g.getName());
+            storage.add("ps", g.getProcesses().size()); // Process-Size
+
+            ArrayList<String> processes = g.getProcesses();
+            for (int i = 0; i < processes.size(); i++) {
+                storage.add("p" + i, processes.get(i));
+            }
+
+            storage.save(saveDir + PSystem.getFileSeparator() + "Groups" + PSystem.getFileSeparator() + "Groups" + groupCount++ + ".cfg");
+        }
+
+        // settings
+        PDataStorage settings = new PDataStorage();
+        if (am.getPortName() != null)
+            settings.add("port", am.getPortName());
+
+        settings.add("autoConnect", AudioManager.doAutoConnect);
+        settings.add("minimized", !ui.f.isVisible());
+        System.out.println(ui.f.isVisible());
+        settings.save(saveDir + PSystem.getFileSeparator() + "settings.cfg");
+
         System.out.println("[Main] :: variables saved");
     }
 

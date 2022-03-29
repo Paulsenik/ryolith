@@ -1,6 +1,7 @@
 package ooo.paulsen.audiocontrol;
 
 import com.fazecast.jSerialComm.SerialPortInvalidPortException;
+import ooo.paulsen.Control;
 import ooo.paulsen.Main;
 import ooo.paulsen.io.PCustomProtocol;
 import ooo.paulsen.io.serial.PSerialConnection;
@@ -8,9 +9,12 @@ import ooo.paulsen.io.serial.PSerialListener;
 import ooo.paulsen.utils.PSystem;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class AudioManager {
 
+    public static boolean doAutoConnect = true;
+    public static String lastPort = "";
 
     // Serial
     private PSerialConnection serial;
@@ -79,8 +83,8 @@ public class AudioManager {
                         }
                     }
 
-                    if (Main.getControl(controlName) == null) {
-                        Main.createControl(controlName);
+                    if (Control.getControl(controlName) == null) {
+                        new Control(controlName);
                     }
 
                     try {

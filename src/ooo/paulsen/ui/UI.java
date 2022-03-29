@@ -14,9 +14,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.awt.image.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 
 public class UI {
@@ -47,10 +49,7 @@ public class UI {
 
         @Override
         public void windowIconified(WindowEvent e) {
-            if (isSystemTrayWorking) {
-                f.setVisible(false);
-            } else
-                f.setVisible(true);
+            f.setVisible(!isSystemTrayWorking);
         }
 
         @Override
@@ -60,10 +59,11 @@ public class UI {
     }
 
     public static final String TITLE = "Audio-Controller";
+    public static boolean startMinimized = false;
 
     public PUIFrame f;
 
-    Image img; // TrayIcon
+    BufferedImage img; // TrayIcon
     TrayIcon trayIcon;
 
     // Top-Bar
@@ -80,12 +80,83 @@ public class UI {
     private PUIElement addGroupB, removeGroupB, refreshProcessesB;
 
     // variables get set once
-    private boolean hasInit = false, isSystemTrayWorking = false;
+    private boolean isSystemTrayWorking = false;
 
     // important changing variables
     private boolean isSettings = false;
     private int bHeight, space, textHeight;
     private String selectedGroup = null;
+
+    // Render Desktop-Icon
+    /*
+    public static void main(String[] args) {
+
+        int size = 1000;
+        BufferedImage img = new BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB);
+
+        Graphics g = img.getGraphics();
+
+        Color c = new Color(255, 255, 255);
+        Color bg = new Color(0,0,0);
+
+        {
+
+            g.setColor(bg);
+            g.fillRect(0, 0, size, size);
+
+            int offset = size / 20;
+
+            g.setColor(c);
+            g.fillArc(-size - offset, 0, size * 2, size, -50, 100);
+            g.setColor(bg);
+            g.fillArc((int) (-size * 0.85) - offset, 0, (int) (size * 2 * 0.85), size, -60, 120);
+            g.setColor(c);
+            g.fillArc((int) (-size * 0.75) - offset, 0, (int) (size * 2 * 0.75), size, -30, 60);
+            g.setColor(bg);
+            g.fillArc((int) (-size * 0.6) - offset, 0, (int) (size * 2 * 0.6), size, -60, 120);
+
+            g.setColor(c);
+            g.fillOval(size / 20, size / 4, size / 3, size / 2);
+
+            int[][] poly = new int[2][4];
+            poly[0][0] = size / 20 + size / 3 / 2;
+            poly[1][0] = size / 4;
+            poly[0][1] = size / 5 * 2;
+            poly[1][1] = size / 8;
+            poly[0][2] = size / 5 * 2;
+            poly[1][2] = size - size / 8;
+            poly[0][3] = size / 20 + size / 3 / 2;
+            poly[1][3] = size - size / 4;
+
+            g.fillPolygon(poly[0], poly[1], poly[0].length);
+        }
+
+        ImageFilter filter = new RGBImageFilter() {
+            int transparentColor = bg.getRGB() | 0xFF000000;
+
+            public final int filterRGB(int x, int y, int rgb) {
+                if ((rgb | 0xFF000000) == transparentColor) {
+                    return 0x00FFFFFF & rgb;
+                } else {
+                    return rgb;
+                }
+            }
+        };
+
+        ImageProducer filteredImgProd = new FilteredImageSource(img.getSource(), filter);
+        Image transparentImg = Toolkit.getDefaultToolkit().createImage(filteredImgProd);
+
+        BufferedImage b_img = new BufferedImage(transparentImg.getWidth(null), transparentImg.getHeight(null), BufferedImage.TYPE_4BYTE_ABGR);
+
+        b_img.getGraphics().drawImage(transparentImg, 0, 0, null);
+
+        try {
+            ImageIO.write(b_img, "png", new File("JAudioController-Desktop-Icon.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    */
 
     public UI() {
 
@@ -94,14 +165,53 @@ public class UI {
 
         f = new PUIFrame(TITLE, 1300, 600);
 
+        f.setVisible(false);
+
         try {
             img = ImageIO.read(new File("Audio.png"));
         } catch (SecurityException e) {
             System.out.println("Couldn't set Application-Image");
-            f.sendUserInfo("Couldn't set Application-Image");
         } catch (IOException e) {
             System.out.println("Couldn't load Application-Image");
-            f.sendUserInfo("Couldn't load Application-Image");
+        }
+
+        // set self-drawn image
+        if (img == null) {
+            int size = (int) SystemTray.getSystemTray().getTrayIconSize().getHeight() * 4;
+            img = new BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB);
+
+            Graphics g = img.getGraphics();
+            // make own image, when Audio.png is missing
+            {
+                g.setColor(Color.white);
+                g.fillRect(0, 0, size, size);
+
+                int offset = size / 20;
+
+                g.setColor(Color.DARK_GRAY);
+                g.fillArc(-size - offset, 0, size * 2, size, -50, 100);
+                g.setColor(Color.white);
+                g.fillArc((int) (-size * 0.85) - offset, 0, (int) (size * 2 * 0.85), size, -60, 120);
+                g.setColor(Color.DARK_GRAY);
+                g.fillArc((int) (-size * 0.75) - offset, 0, (int) (size * 2 * 0.75), size, -30, 60);
+                g.setColor(Color.white);
+                g.fillArc((int) (-size * 0.6) - offset, 0, (int) (size * 2 * 0.6), size, -60, 120);
+
+                g.setColor(Color.darkGray);
+                g.fillOval(size / 20, size / 4, size / 3, size / 2);
+
+                int[][] poly = new int[2][4];
+                poly[0][0] = size / 20 + size / 3 / 2;
+                poly[1][0] = size / 4;
+                poly[0][1] = size / 5 * 2;
+                poly[1][1] = size / 8;
+                poly[0][2] = size / 5 * 2;
+                poly[1][2] = size - size / 8;
+                poly[0][3] = size / 20 + size / 3 / 2;
+                poly[1][3] = size - size / 4;
+
+                g.fillPolygon(poly[0], poly[1], poly[0].length);
+            }
         }
 
         if (img != null) {
@@ -116,25 +226,19 @@ public class UI {
         initElements();
         initUpdate();
 
-        for (int i = 0; i < 20; i++) {
-            PUIElement e = new PUIText(f, "" + i);
-            e.addActionListener(new PUIAction() {
-                @Override
-                public void run(PUIElement puiElement) {
-                    System.out.println(((PUIText) puiElement).getText());
-                }
-            });
-            processPanel.addElement(e);
-        }
-
         updateControlList();
         updateGroupList();
         updateProcessList();
 
         f.updateElements();
-        hasInit = true;
-    }
 
+        // load minimized-setting
+        if (startMinimized) {
+            minimizeUI.runAllActions();
+        } else {
+            f.setVisible(true);
+        }
+    }
 
     public void initSystemTray() {
         if (SystemTray.isSupported()) {
@@ -184,6 +288,7 @@ public class UI {
                 tray.add(trayIcon);
                 isSystemTrayWorking = true;
             } catch (Exception e) {
+                e.printStackTrace();
                 isSystemTrayWorking = false;
                 f.sendUserInfo("Couldn't load System Tray!");
             }
@@ -257,24 +362,29 @@ public class UI {
 
                 if (Main.am.isSerialConnected()) {
                     Main.am.disconnectSerial();
-                    serialButton.setText("-");
-                    f.updateElements();
+                    updateCurrentSerialConnection();
 
                     return;
                 }
 
-                String[] ports = PSerialConnection.getSerialPorts();
+                ArrayList<String> ports = new ArrayList<>();
+                ports.add("");
+                ports.addAll(Arrays.asList(PSerialConnection.getSerialPorts()));
                 int index = f.getUserSelection("Choose your USB-Port", ports);
+
+
+                if (index == 0) // escaped
+                    return;
 
                 if (index == -1) {
                     f.sendUserWarning("Select a valid Port");
                     return;
                 }
 
-                if (Main.am.connectToSerial(ports[index])) {
+                if (Main.am.connectToSerial(ports.get(index))) {
                     updateCurrentSerialConnection();
                 } else {
-                    f.sendUserInfo("Could not connect to " + ports[index]);
+                    f.sendUserInfo("Could not connect to " + ports.get(index));
                 }
             }
         });
@@ -308,13 +418,13 @@ public class UI {
             public void run(PUIElement that) {
                 String input = f.getUserInput("Input Control-Name", "");
 
-                if (Main.getControl(input) != null) {
+                if (Control.getControl(input) != null) {
                     f.sendUserWarning("Control \"" + input + "\" already exists!");
                     return;
                 }
 
                 if (input != null && !input.isEmpty()) {
-                    Main.createControl(input);
+                    new Control(input);
                 }
             }
         });
@@ -420,6 +530,15 @@ public class UI {
             public void paint(Graphics2D g, int x, int y, int w, int h) {
 
                 updateRotaryControls();
+
+                g.setColor(new Color(49, 49, 49));
+                g.fillRect(0, 0, w + 10, bHeight + space / 2);
+                g.setColor(new Color(42, 42, 42));
+                g.fillRect(0, bHeight + space / 2, w + 10, 2);
+
+                g.setColor(new Color(108, 108, 108));
+                g.setFont(new Font("Arial", Font.PLAIN, space));
+                g.drawString(Main.version, 0, h);
 
                 g.setFont(new Font("Arial", Font.PLAIN, bHeight / 2));
 
@@ -533,7 +652,7 @@ public class UI {
     public synchronized void updateControlList() {
         ArrayList<PUIElement> elems = new ArrayList<>();
 
-        for (Control c : Main.getControls()) {
+        for (Control c : Control.getControls()) {
             elems.add(new ControlElement(c.getName(), f));
         }
 
@@ -551,7 +670,7 @@ public class UI {
             PUIText t = new PUIText(f, g.getName()) {
                 @Override
                 public void draw(Graphics2D g) {
-                    if ((boolean) getMetadata() == false) {
+                    if (!((boolean) getMetadata())) {
                         setBackgroundColor(new Color(208, 96, 4));
                     } else {
                         setBackgroundColor(new Color(37, 175, 4));
@@ -664,7 +783,7 @@ public class UI {
         for (PUIElement e : audioControlUI.getElements()) {
 
             ControlElement ce = ((ControlElement) e);
-            Control c = Main.getControl(ce.getName());
+            Control c = Control.getControl(ce.getName());
 
             if (c != null) {
                 ce.updateRotaryValue(c.getVolume());
@@ -673,10 +792,13 @@ public class UI {
     }
 
     public synchronized void updateCurrentSerialConnection() {
-        if (Main.am.isSerialConnected())
+        if (Main.am.isSerialConnected()) {
             serialButton.setText(Main.am.getPortName());
-        else
+            f.setTitle(TITLE + " - USB: " + Main.am.getPortName());
+        } else {
             serialButton.setText("-");
+            f.setTitle(TITLE);
+        }
         f.repaint();
 
         if (PSystem.getOSType() == PSystem.OSType.WINDOWS)

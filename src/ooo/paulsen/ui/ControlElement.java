@@ -51,7 +51,7 @@ public class ControlElement extends PUIElement {
                 if (!c.getName().isEmpty()) {
 
                     if (getUserConfirm("Do you want to delete " + c.getName() + " ?", "Delete")) {
-                        Main.removeControl(c.getName());
+                        Control.removeControl(c.getName());
                     }
                 }
             }
@@ -95,7 +95,7 @@ public class ControlElement extends PUIElement {
             @Override
             public void run(PUIElement that) {
 
-                Control c = Main.getControl(name);
+                Control c = Control.getControl(name);
                 if (c == null) {
                     sendUserError("This Control doesn't exist!");
                     return;
@@ -133,7 +133,7 @@ public class ControlElement extends PUIElement {
 
     public void updateGroupList() {
 
-        Control c = Main.getControl(name);
+        Control c = Control.getControl(name);
         if (c == null) {
             sendUserError("This Control doesn't exist!");
             return;
@@ -158,9 +158,11 @@ public class ControlElement extends PUIElement {
                     // Remove
                     boolean b = getUserConfirm("Really remove \"" + ((PUIText) that).getText() + "\" from " + name + " ?", "Control");
                     if (b) {
-                        Control c = Main.getControl(name);
-                        c.removeGroup(Group.getGroup(((PUIText) that).getText()));
-                        updateGroupList();
+                        Control c = Control.getControl(name);
+                        if (c != null) {
+                            c.removeGroup(Group.getGroup(((PUIText) that).getText()));
+                            updateGroupList();
+                        }
                     }
 
                 }
@@ -198,7 +200,7 @@ public class ControlElement extends PUIElement {
         g.setClip(x, y, w, h);
 
         g.setColor(Color.white);
-        g.setFont(new Font("Arial", 0, topSize));
+        g.setFont(new Font("Arial", Font.PLAIN, topSize));
         g.drawString(name, x, (int) (y + topSize * 0.9));
 
         g.setClip(c);
