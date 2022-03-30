@@ -83,13 +83,14 @@ public abstract class AudioController {
                             Thread.sleep(10);
                         }
                     } catch (InterruptedException e) {
-                        System.out.println("Stopping Thread...");
+                        System.err.println("[AudioController] :: Thread interrupted and stopped");
                         return;
                     } catch (ConcurrentModificationException e) {
+                        e.printStackTrace();
                     }
 
                 }
-                System.out.println("Stopping Thread...");
+                System.out.println("[AudioController] :: Thread stopped");
             }
         });
         queueWorker.start();

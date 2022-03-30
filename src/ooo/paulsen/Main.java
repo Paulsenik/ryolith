@@ -2,7 +2,6 @@ package ooo.paulsen;
 
 import ooo.paulsen.audiocontrol.AudioManager;
 import ooo.paulsen.io.PDataStorage;
-import ooo.paulsen.io.PFile;
 import ooo.paulsen.io.PFolder;
 import ooo.paulsen.ui.UI;
 import ooo.paulsen.utils.PSystem;
@@ -12,8 +11,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
-import java.net.URISyntaxException;
-import java.security.CodeSource;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -24,7 +21,7 @@ import java.util.TimerTask;
  */
 public class Main {
 
-    public static final String version = "b2.2.0";
+    public static final String version = "b2.2.1";
     private static final boolean devMode = false;
 
     public static final String saveDir = System.getProperty("user.home") + PSystem.getFileSeparator() + ".jaudiocontroller";
@@ -38,11 +35,11 @@ public class Main {
 
     public static void main(String[] args) {
 
-        PFolder.createFolder(saveDir);
-
         initVariables();
 
         if (!devMode) {
+
+            PFolder.createFolder(saveDir);
 
             PFolder.createFolder(saveDir + PSystem.getFileSeparator() + "Logs");
 
@@ -52,12 +49,14 @@ public class Main {
                 System.setOut(out);
                 System.setErr(out);
             } catch (FileNotFoundException e) {
+                e.printStackTrace();
             }
         }
 
         try {
             am = new AudioManager();
         } catch (Exception e) {
+            e.printStackTrace();
             JOptionPane.showMessageDialog(null, e.getMessage(), "Startup-Error", JOptionPane.ERROR_MESSAGE);
             System.exit(0);
         }
@@ -74,32 +73,10 @@ public class Main {
         new Timer().scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
+                System.out.println("[Main] :: Auto-Saving...");
                 saveVariables();
             }
         }, 5 * 60 * 1000, 10 * 60 * 1000);
-    }
-
-    public static void removeGroup(String name) {
-        for (int i = 0; i < Group.groups.size(); i++) {
-            Group g = Group.groups.get(i);
-            if (g != null && g.getName().equals(name)) {
-
-                // remove from index
-                Group.groups.remove(g);
-
-                // remove this Group from all Controlls
-                for (Control c : Control.getControls()) {
-                    c.removeGroup(g);
-                }
-
-                if (ui != null) {
-                    ui.updateControlList();
-                    ui.updateGroupList();
-                }
-
-                return;
-            }
-        }
     }
 
     public static void setControlVolume(String controlName, float volume) {
@@ -114,6 +91,7 @@ public class Main {
      * Saves and exits program
      */
     public static void exitAll() {
+        System.out.println("[Main] :: exitAll()");
         try {
             saveVariables();
         } catch (Exception e) {
@@ -129,6 +107,8 @@ public class Main {
 
     public static void initVariables() {
 
+        System.out.println("[Main] :: initVariables() ...");
+
         // Groups
         String groupFiles[] = PFolder.getFiles(saveDir + PSystem.getFileSeparator() + "Groups", "cfg");
         if (groupFiles != null)
@@ -137,6 +117,7 @@ public class Main {
                 try {
                     storage.read(group);
                 } catch (IllegalArgumentException e) {
+                    e.printStackTrace();
                     continue;
                 }
 
@@ -151,6 +132,7 @@ public class Main {
                             g.addProcess(pName);
                     }
                 } catch (IllegalArgumentException e) {
+                    e.printStackTrace();
                     continue;
                 }
             }
@@ -163,6 +145,7 @@ public class Main {
                 try {
                     storage.read(control);
                 } catch (IllegalArgumentException e) {
+                    e.printStackTrace();
                     continue;
                 }
 
@@ -180,6 +163,7 @@ public class Main {
                             c.addGroup(Group.getGroup(gName));
                     }
                 } catch (IllegalArgumentException e) {
+                    e.printStackTrace();
                     continue;
                 }
 
@@ -193,27 +177,32 @@ public class Main {
                 try {
                     AudioManager.doAutoConnect = settings.getBoolean("autoConnect");
                 } catch (IllegalArgumentException e) {
+                    e.printStackTrace();
                 }
 
                 try {
                     AudioManager.lastPort = settings.getString("port");
                 } catch (IllegalArgumentException e) {
+                    e.printStackTrace();
                 }
 
                 try {
                     UI.startMinimized = settings.getBoolean("minimized");
                 } catch (IllegalArgumentException e) {
+                    e.printStackTrace();
                 }
 
             } catch (IllegalArgumentException e) {
+                e.printStackTrace();
             }
         }
 
-        System.out.println("[Main] :: variables initialized");
+        System.out.println("[Main] :: ...variables initialized");
     }
 
 
     public static void saveVariables() {
+        System.out.println("[Main] :: saveVariables() ...");
 
         PFolder.createFolder(saveDir + PSystem.getFileSeparator() + "Controls");
         PFolder.createFolder(saveDir + PSystem.getFileSeparator() + "Groups");
@@ -256,10 +245,9 @@ public class Main {
 
         settings.add("autoConnect", AudioManager.doAutoConnect);
         settings.add("minimized", !ui.f.isVisible());
-        System.out.println(ui.f.isVisible());
         settings.save(saveDir + PSystem.getFileSeparator() + "settings.cfg");
 
-        System.out.println("[Main] :: variables saved");
+        System.out.println("[Main] :: ...variables saved");
     }
 
 }

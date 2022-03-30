@@ -17,6 +17,29 @@ public class Group {
         return null;
     }
 
+    public static void removeGroup(String name) {
+        for (int i = 0; i < groups.size(); i++) {
+            Group g = groups.get(i);
+            if (g != null && g.getName().equals(name)) {
+
+                // remove from index
+                groups.remove(g);
+
+                // remove this Group from all Controlls
+                for (Control c : Control.getControls()) {
+                    c.removeGroup(g);
+                }
+
+                if (Main.ui != null) {
+                    Main.ui.updateControlList();
+                    Main.ui.updateGroupList();
+                }
+
+                return;
+            }
+        }
+    }
+
     private CopyOnWriteArrayList<String> processes = new CopyOnWriteArrayList<>();
 
     private String name;

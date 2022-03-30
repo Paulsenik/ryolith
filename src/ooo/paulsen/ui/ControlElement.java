@@ -46,6 +46,7 @@ public class ControlElement extends PUIElement {
         removeControl.addActionListener(new PUIAction() {
             @Override
             public void run(PUIElement that) {
+                System.out.println("[ControlElement] :: pressed removeControl");
                 ControlElement c = (ControlElement) that.getMetadata();
 
                 if (!c.getName().isEmpty()) {
@@ -94,6 +95,7 @@ public class ControlElement extends PUIElement {
         addGroup.addActionListener(new PUIAction() {
             @Override
             public void run(PUIElement that) {
+                System.out.println("[ControlElement] :: pressed addGroup");
 
                 Control c = Control.getControl(name);
                 if (c == null) {
@@ -154,6 +156,8 @@ public class ControlElement extends PUIElement {
             t.addActionListener(new PUIAction() {
                 @Override
                 public void run(PUIElement that) {
+
+                    System.out.println("[ControlElement] :: pressed Group: " + ((PUIText) that).getText());
 
                     // Remove
                     boolean b = getUserConfirm("Really remove \"" + ((PUIText) that).getText() + "\" from " + name + " ?", "Control");

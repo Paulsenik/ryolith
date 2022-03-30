@@ -88,16 +88,11 @@ public class UI {
     private String selectedGroup = null;
 
     // Render Desktop-Icon
-    /*
-    public static void main(String[] args) {
+    public static BufferedImage getApplicationImage(int size, Color mainColor, Color bg) {
 
-        int size = 1000;
         BufferedImage img = new BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB);
 
         Graphics g = img.getGraphics();
-
-        Color c = new Color(255, 255, 255);
-        Color bg = new Color(0,0,0);
 
         {
 
@@ -106,16 +101,16 @@ public class UI {
 
             int offset = size / 20;
 
-            g.setColor(c);
+            g.setColor(mainColor);
             g.fillArc(-size - offset, 0, size * 2, size, -50, 100);
             g.setColor(bg);
             g.fillArc((int) (-size * 0.85) - offset, 0, (int) (size * 2 * 0.85), size, -60, 120);
-            g.setColor(c);
+            g.setColor(mainColor);
             g.fillArc((int) (-size * 0.75) - offset, 0, (int) (size * 2 * 0.75), size, -30, 60);
             g.setColor(bg);
             g.fillArc((int) (-size * 0.6) - offset, 0, (int) (size * 2 * 0.6), size, -60, 120);
 
-            g.setColor(c);
+            g.setColor(mainColor);
             g.fillOval(size / 20, size / 4, size / 3, size / 2);
 
             int[][] poly = new int[2][4];
@@ -150,13 +145,8 @@ public class UI {
 
         b_img.getGraphics().drawImage(transparentImg, 0, 0, null);
 
-        try {
-            ImageIO.write(b_img, "png", new File("JAudioController-Desktop-Icon.png"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        return b_img;
     }
-    */
 
     public UI() {
 
@@ -169,49 +159,14 @@ public class UI {
 
         try {
             img = ImageIO.read(new File("Audio.png"));
-        } catch (SecurityException e) {
-            System.out.println("Couldn't set Application-Image");
-        } catch (IOException e) {
-            System.out.println("Couldn't load Application-Image");
+        } catch (SecurityException | IOException e) {
+            System.out.println("[UI] :: No Application-Image available");
         }
 
         // set self-drawn image
         if (img == null) {
             int size = (int) SystemTray.getSystemTray().getTrayIconSize().getHeight() * 4;
-            img = new BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB);
-
-            Graphics g = img.getGraphics();
-            // make own image, when Audio.png is missing
-            {
-                g.setColor(Color.white);
-                g.fillRect(0, 0, size, size);
-
-                int offset = size / 20;
-
-                g.setColor(Color.DARK_GRAY);
-                g.fillArc(-size - offset, 0, size * 2, size, -50, 100);
-                g.setColor(Color.white);
-                g.fillArc((int) (-size * 0.85) - offset, 0, (int) (size * 2 * 0.85), size, -60, 120);
-                g.setColor(Color.DARK_GRAY);
-                g.fillArc((int) (-size * 0.75) - offset, 0, (int) (size * 2 * 0.75), size, -30, 60);
-                g.setColor(Color.white);
-                g.fillArc((int) (-size * 0.6) - offset, 0, (int) (size * 2 * 0.6), size, -60, 120);
-
-                g.setColor(Color.darkGray);
-                g.fillOval(size / 20, size / 4, size / 3, size / 2);
-
-                int[][] poly = new int[2][4];
-                poly[0][0] = size / 20 + size / 3 / 2;
-                poly[1][0] = size / 4;
-                poly[0][1] = size / 5 * 2;
-                poly[1][1] = size / 8;
-                poly[0][2] = size / 5 * 2;
-                poly[1][2] = size - size / 8;
-                poly[0][3] = size / 20 + size / 3 / 2;
-                poly[1][3] = size - size / 4;
-
-                g.fillPolygon(poly[0], poly[1], poly[0].length);
-            }
+            img = getApplicationImage(size, Color.white, Color.black);
         }
 
         if (img != null) {
@@ -280,6 +235,13 @@ public class UI {
             popup.add(close);
 
             try {
+
+                int size = (int) SystemTray.getSystemTray().getTrayIconSize().getHeight() * 4;
+                if (PSystem.getOSType() == PSystem.OSType.WINDOWS)
+                    img = getApplicationImage(size, Color.white, Color.black);
+                else
+                    img = getApplicationImage(size, Color.darkGray, Color.white);
+
                 trayIcon = new TrayIcon(img, "Serial Audio Controller", popup);
                 trayIcon.addActionListener(show.getActionListeners()[0]);
                 trayIcon.setToolTip("Audio-Controller");
@@ -302,13 +264,13 @@ public class UI {
         minimizeUI.addActionListener(new PUIAction() {
             @Override
             public void run(PUIElement arg0) {
-                System.out.println("Minimize");
                 if (SystemTray.isSupported() && isSystemTrayWorking) {
+                    System.out.println("[UI] :: Minimized");
                     f.setVisible(false);
                 } else {
                     if (f.getState() == JFrame.NORMAL) {
                         f.setState(JFrame.ICONIFIED);
-                        System.out.println("iconified");
+                        System.out.println("[UI] :: Iconified");
                     } else
                         f.setState(JFrame.NORMAL);
                 }
@@ -335,6 +297,7 @@ public class UI {
             public void run(PUIElement arg0) {
                 isSettings = !isSettings;
                 f.updateElements();
+                System.out.println("[UI] :: pressed settings; isSettings: " + isSettings);
             }
         });
         settingsUI.setDraw(new PUIPaintable() {
@@ -360,6 +323,8 @@ public class UI {
             @Override
             public void run(PUIElement that) {
 
+                System.out.println("[UI] :: pressed serialButton");
+
                 if (Main.am.isSerialConnected()) {
                     Main.am.disconnectSerial();
                     updateCurrentSerialConnection();
@@ -380,6 +345,8 @@ public class UI {
                     f.sendUserWarning("Select a valid Port");
                     return;
                 }
+
+                System.out.println("[UI] :: serialButton selected port: " + ports.get(index));
 
                 if (Main.am.connectToSerial(ports.get(index))) {
                     updateCurrentSerialConnection();
@@ -416,6 +383,7 @@ public class UI {
         addAudioControlB.addActionListener(new PUIAction() {
             @Override
             public void run(PUIElement that) {
+                System.out.println("[UI] :: pressed addAudioControlB");
                 String input = f.getUserInput("Input Control-Name", "");
 
                 if (Control.getControl(input) != null) {
@@ -442,6 +410,7 @@ public class UI {
         addGroupB.addActionListener(new PUIAction() {
             @Override
             public void run(PUIElement that) {
+                System.out.println("[UI] :: pressed addGroupB");
 
                 String input = f.getUserInput("Create a new Group:", "Group1");
                 if (input == null)
@@ -465,8 +434,9 @@ public class UI {
             @Override
             public void run(PUIElement that) {
                 if (selectedGroup != null) {
+                    System.out.println("[UI] :: pressed removeGroupB");
                     if (f.getUserConfirm("Remove \"" + selectedGroup + "\" ?", "Group")) {
-                        Main.removeGroup(selectedGroup);
+                        Group.removeGroup(selectedGroup);
                         selectedGroup = null;
                         updateGroupList();
                     }
@@ -492,6 +462,7 @@ public class UI {
         refreshProcessesB.addActionListener(new PUIAction() {
             @Override
             public void run(PUIElement puiElement) {
+                System.out.println("[UI] :: pressed refreshProcessesB");
                 Main.am.refreshProcesses();
                 updateProcessList();
             }
@@ -696,7 +667,7 @@ public class UI {
                     else
                         selectedGroup = null;
 
-                    System.out.println("Click on Group : " + ((PUIText) that).getText() + " selected = " + that.getMetadata());
+                    System.out.println("[UI] :: Clicked on Group: " + ((PUIText) that).getText() + "; Selected: " + that.getMetadata());
 
                     f.repaint();
                 }
