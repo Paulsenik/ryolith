@@ -65,7 +65,8 @@ public class Main {
 
         // autoconnect
         if (AudioManager.doAutoConnect && AudioManager.lastPort != null && !AudioManager.lastPort.isEmpty()) {
-            am.connectToSerial(AudioManager.lastPort);
+            if (am.connectToSerial(AudioManager.lastPort))
+                System.out.println("[Main] :: Auto-Connected to " + AudioManager.lastPort);
             ui.updateCurrentSerialConnection();
         }
 

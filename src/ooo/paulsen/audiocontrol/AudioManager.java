@@ -110,6 +110,7 @@ public class AudioManager {
                 @Override
                 public void run() {
                     Main.ui.updateCurrentSerialConnection();
+                    System.out.println("[AudioManager] :: disconnected");
                 }
             });
             serial.addListener(listener);
@@ -125,8 +126,14 @@ public class AudioManager {
         return true;
     }
 
+    /**
+     * Uses exponential use of Volume
+     *
+     * @param process
+     * @param volume
+     */
     public void setVolume(String process, float volume) {
-        controller.setVolume(process, volume);
+        controller.setVolume(process, (float) Math.pow(volume, 1.7));
     }
 
     public ArrayList<String> getProcesses() {

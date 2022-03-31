@@ -350,8 +350,10 @@ public class UI {
 
                 if (Main.am.connectToSerial(ports.get(index))) {
                     updateCurrentSerialConnection();
+                    System.out.println("[UI] :: Connected to " + ports.get(index));
                 } else {
                     f.sendUserInfo("Could not connect to " + ports.get(index));
+                    System.out.println("[UI] :: Could not connect to " + ports.get(index));
                 }
             }
         });
