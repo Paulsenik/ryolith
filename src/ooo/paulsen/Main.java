@@ -22,7 +22,7 @@ import java.util.TimerTask;
 public class Main {
 
     public static final String version = "b2.2.1";
-    private static final boolean devMode = false;
+    private static final boolean devMode = true;
 
     public static final String saveDir = System.getProperty("user.home") + PSystem.getFileSeparator() + ".jaudiocontroller";
 
@@ -184,7 +184,6 @@ public class Main {
                 try {
                     AudioManager.lastPort = settings.getString("port");
                 } catch (IllegalArgumentException e) {
-                    e.printStackTrace();
                 }
 
                 try {

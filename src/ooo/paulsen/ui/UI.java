@@ -195,6 +195,8 @@ public class UI {
         }
     }
 
+    long lastMin;
+
     public void initSystemTray() {
         if (SystemTray.isSupported()) {
             SystemTray tray = SystemTray.getSystemTray();
@@ -205,6 +207,13 @@ public class UI {
             show.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
+                    System.out.println("1");
+                    if (lastMin + 100 > System.currentTimeMillis())
+                        return;
+                    System.out.println("2");
+
+                    lastMin = System.currentTimeMillis();
+
                     f.setAlwaysOnTop(true);
 
                     if (isSystemTrayWorking) {
@@ -220,7 +229,6 @@ public class UI {
                         Thread.sleep(100);
                     } catch (InterruptedException e1) {
                     }
-                    f.setAlwaysOnTop(false);
                 }
             });
             popup.add(show);

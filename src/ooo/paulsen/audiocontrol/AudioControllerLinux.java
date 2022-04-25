@@ -15,7 +15,7 @@ public class AudioControllerLinux extends AudioController {
      * String = ProcessName<br>
      * Integer = ProcessID
      */
-    private volatile HashMap<String, Integer> processes = new HashMap<>();
+    private volatile HashMap<String, ArrayList<Integer>> processes = new HashMap<>();
 
     private boolean doesPactlExist = false;
 
@@ -39,13 +39,38 @@ public class AudioControllerLinux extends AudioController {
         }
         String lines[] = out.split(String.valueOf((char) 10));
 
+        // this replaces the "processes"-map
+        HashMap<String, ArrayList<Integer>> newProcesses = new HashMap<>();
+
         int lastBeginning = 0; // marks the beginning-line of a new Process of the output
         int equalCount = 0; // counts lines that contain "=" without one line, not having one
         for (int i = 0; i < lines.length; i++) {
             if (equalCount > 3) {
                 if (i + 1 >= lines.length || lines[i + 1].trim().isEmpty()) {
 
-                    addProcessToList(Arrays.copyOfRange(lines, lastBeginning, i));
+                    HashMap<String, ArrayList<Integer>> tempMap = getProcessFromLines(Arrays.copyOfRange(lines, lastBeginning, i));
+
+//                    newProcesses.putAll(processes); //testpurpose only!!
+
+                    // checks if the process-name is already registered
+                    for (String key : tempMap.keySet()) {
+
+                        // key/process exists but has many ids
+                        if (newProcesses.containsKey(key)) {
+                            ArrayList<Integer> ids = newProcesses.get(key);
+
+                            if (ids != null) {
+                                ids.addAll(tempMap.get(key));
+                            } else {
+                                System.err.println("[AudioControllerLinux] :: process/key could not be found");
+                            }
+
+                            // key/process does not exist
+                        } else {
+                            newProcesses.putAll(tempMap);
+                        }
+                    }
+
                     lastBeginning = i + 2;
 
                     if (i + 1 < lines.length)
@@ -53,13 +78,14 @@ public class AudioControllerLinux extends AudioController {
                 }
             }
 
-
             if (lines[i].contains("=")) {
                 equalCount++;
             } else {
                 equalCount = 0;
             }
         }
+
+        processes = newProcesses;
 
         return true;
     }
@@ -70,7 +96,7 @@ public class AudioControllerLinux extends AudioController {
      * @param lines of Command-Output
      * @return if it succeeded
      */
-    private boolean addProcessToList(String lines[]) {
+    private HashMap<String, ArrayList<Integer>> getProcessFromLines(String lines[]) {
 
         try {
 
@@ -78,7 +104,7 @@ public class AudioControllerLinux extends AudioController {
             int indexID = lines[0].lastIndexOf("#"); // index of first line where the ID lies
 
             if (indexID == -1) // No "#" found
-                return false;
+                return null;
 
             int ID = Integer.parseInt(lines[0].substring(indexID + 1, lines[0].length()));
 
@@ -89,18 +115,24 @@ public class AudioControllerLinux extends AudioController {
                     int indexName = l.indexOf("\"");
 
                     if (indexName == -1) // No '"' found
-                        return false;
+                        return null;
 
                     name = l.stripTrailing().substring(indexName + 1, l.length() - 1);
                 }
             }
 
-            processes.put(name, ID);
+            ArrayList<Integer> ids = new ArrayList<>();
+            ids.add(ID);
+//            System.out.println(name + " " + ids.get(0));
 
-            return true;
+            // put key & ids in Map
+            HashMap<String, ArrayList<Integer>> map = new HashMap<String, ArrayList<Integer>>();
+            map.put(name, ids);
+
+            return map;
         } catch (NumberFormatException | IndexOutOfBoundsException e) {
             e.printStackTrace();
-            return false;
+            return null;
         }
     }
 
@@ -110,7 +142,9 @@ public class AudioControllerLinux extends AudioController {
 
         String out = "ERROR";
         if (processes.containsKey(processName)) {
-            out = run(processes.get(processName), volume);
+            for (int i : processes.get(processName)) {
+                out = run(i, volume);
+            }
         }
 
         // - didn't find Process with this ID
@@ -118,7 +152,9 @@ public class AudioControllerLinux extends AudioController {
         if (out.contains("ERROR")) {
             refreshProcesses();
             if (processes.containsKey(processName)) {
-                run(processes.get(processName), volume); // run again
+                for (int i : processes.get(processName)) {
+                    run(i, volume);
+                }
             }
         }
     }
