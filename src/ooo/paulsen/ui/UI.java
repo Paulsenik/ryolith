@@ -26,9 +26,9 @@ public class UI {
     class WindowEventHandler implements WindowListener {
 
         public void windowClosing(WindowEvent evt) {
-            if (f.getUserConfirm("Really Close Audio Controller", "Audio Controller")) {
-                Main.exitAll();
-            }
+            if (isSystemTrayWorking)
+                toggleMinimized(true);
+            Main.close();
         }
 
         @Override
@@ -49,7 +49,6 @@ public class UI {
 
         @Override
         public void windowIconified(WindowEvent e) {
-            f.setVisible(!isSystemTrayWorking);
         }
 
         @Override
@@ -153,9 +152,7 @@ public class UI {
         // PUI - DarkMODE
         PUIElement.darkUIMode = true;
 
-        f = new PUIFrame(TITLE, 1300, 600);
-
-        f.setVisible(false);
+        f = new PUIFrame(TITLE, 1300, 600, false);
 
         try {
             img = ImageIO.read(new File("Audio.png"));
@@ -165,8 +162,7 @@ public class UI {
 
         // set self-drawn image
         if (img == null) {
-            int size = (int) SystemTray.getSystemTray().getTrayIconSize().getHeight() * 4;
-            img = getApplicationImage(size, Color.white, Color.black);
+            img = getApplicationImage(265, Color.white, Color.black);
         }
 
         if (img != null) {
@@ -177,9 +173,9 @@ public class UI {
         f.setMinimumSize(new Dimension(600, 400));
         f.addWindowListener(new WindowEventHandler());
 
-        initSystemTray();
         initElements();
         initUpdate();
+        initSystemTray();
 
         updateControlList();
         updateGroupList();
@@ -188,14 +184,38 @@ public class UI {
         f.updateElements();
 
         // load minimized-setting
-        if (startMinimized) {
-            minimizeUI.runAllActions();
+        if (startMinimized && isSystemTrayWorking) {
+            toggleMinimized(true);
         } else {
             f.setVisible(true);
         }
     }
 
-    long lastMin;
+    public void toggleMinimized() {
+
+        boolean b;
+        if (SystemTray.isSupported() && isSystemTrayWorking)
+            b = f.isVisible();
+        else
+            b = f.getState() == JFrame.NORMAL;
+
+        toggleMinimized(b);
+    }
+
+    public void toggleMinimized(boolean b) {
+
+        if (SystemTray.isSupported() && isSystemTrayWorking) {
+            System.out.println("[UI] :: Minimized " + b);
+            f.setVisible(!b);
+        } else { // No Systemtray
+            if (b) {
+                f.setState(JFrame.ICONIFIED);
+                System.out.println("[UI] :: Iconified");
+            } else {
+                f.setState(JFrame.NORMAL);
+            }
+        }
+    }
 
     public void initSystemTray() {
         if (SystemTray.isSupported()) {
@@ -207,28 +227,7 @@ public class UI {
             show.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    System.out.println("1");
-                    if (lastMin + 100 > System.currentTimeMillis())
-                        return;
-                    System.out.println("2");
-
-                    lastMin = System.currentTimeMillis();
-
-                    f.setAlwaysOnTop(true);
-
-                    if (isSystemTrayWorking) {
-                        f.setState(JFrame.NORMAL);
-                        f.setVisible(!f.isVisible());
-                    } else {
-                        if (f.getState() == JFrame.NORMAL)
-                            f.setState(JFrame.ICONIFIED);
-                        else
-                            f.setState(JFrame.NORMAL);
-                    }
-                    try {
-                        Thread.sleep(100);
-                    } catch (InterruptedException e1) {
-                    }
+                    toggleMinimized();
                 }
             });
             popup.add(show);
@@ -237,7 +236,7 @@ public class UI {
             close.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    f.dispatchEvent(new WindowEvent(f, WindowEvent.WINDOW_CLOSING));
+                    Main.close();
                 }
             });
             popup.add(close);
@@ -272,16 +271,7 @@ public class UI {
         minimizeUI.addActionListener(new PUIAction() {
             @Override
             public void run(PUIElement arg0) {
-                if (SystemTray.isSupported() && isSystemTrayWorking) {
-                    System.out.println("[UI] :: Minimized");
-                    f.setVisible(false);
-                } else {
-                    if (f.getState() == JFrame.NORMAL) {
-                        f.setState(JFrame.ICONIFIED);
-                        System.out.println("[UI] :: Iconified");
-                    } else
-                        f.setState(JFrame.NORMAL);
-                }
+                toggleMinimized();
             }
         });
         minimizeUI.setDraw(new PUIPaintable() {

@@ -52,5 +52,5 @@ If you want to edit the configs manually (at your own risk), you can find them *
 ## TODOs
 
 * Reimplement **Windows**-Python-Script into `AudioControllerWin`
-* Implement **Windows-Python-Install** that installs all Python-Modules
+* Package Python-Script into binary (pyinstaller)
 * add Min- & Max-Values for Processes

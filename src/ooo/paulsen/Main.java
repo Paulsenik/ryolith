@@ -22,7 +22,7 @@ import java.util.TimerTask;
 public class Main {
 
     public static final String version = "b2.2.1";
-    private static final boolean devMode = true;
+    private static final boolean devMode = false;
 
     public static final String saveDir = System.getProperty("user.home") + PSystem.getFileSeparator() + ".jaudiocontroller";
 
@@ -86,6 +86,16 @@ public class Main {
                 c.setVolume(volume);
                 ui.f.repaint();
             }
+    }
+
+    /**
+     * Opens UserPopup for closing the Program
+     */
+    public static void close(){
+        if (ui.f.getUserConfirm("Really Close Audio Controller", "Audio Controller")) {
+            ui.f.dispose();
+            Main.exitAll();
+        }
     }
 
     /**
