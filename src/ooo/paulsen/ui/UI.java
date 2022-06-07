@@ -28,7 +28,6 @@ public class UI {
         public void windowClosing(WindowEvent evt) {
             if (isSystemTrayWorking)
                 toggleMinimized(true);
-            Main.close();
         }
 
         @Override
@@ -71,11 +70,11 @@ public class UI {
     private PUICanvas c; // gets used in
 
     // Main-Menu
-    private PUIScrollPanel audioControlUI; // list of Audio-Controllers
+    private PUIList audioControlUI; // list of Audio-Controllers
     private PUIElement addAudioControlB;
 
     // Settings
-    private PUIScrollPanel groupPanel, processPanel;
+    private PUIList groupPanel, processPanel;
     private PUIElement addGroupB, removeGroupB, refreshProcessesB;
 
     // variables get set once
@@ -358,7 +357,7 @@ public class UI {
 
         // Main Menu
         // // AudioControl
-        audioControlUI = new PUIScrollPanel(f);
+        audioControlUI = new PUIList(f);
         audioControlUI.setAlignment(PUIElement.ElementAlignment.HORIZONTAL);
         audioControlUI.setShowedElements(4);
         audioControlUI.setSliderWidth(f.getHeight() / 20);
@@ -399,10 +398,10 @@ public class UI {
 
         // Settings
         // // Panels
-        groupPanel = new PUIScrollPanel(f);
+        groupPanel = new PUIList(f);
         groupPanel.setShowedElements(6);
 
-        processPanel = new PUIScrollPanel(f);
+        processPanel = new PUIList(f);
         processPanel.setShowedElements(10);
 
         // // Buttons

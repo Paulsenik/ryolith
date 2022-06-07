@@ -54,3 +54,4 @@ If you want to edit the configs manually (at your own risk), you can find them *
 * Reimplement **Windows**-Python-Script into `AudioControllerWin`
 * Package Python-Script into binary (pyinstaller)
 * add Min- & Max-Values for Processes
+* Serial-Protocol for directly controlling a processes' Volume

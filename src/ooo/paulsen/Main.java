@@ -4,13 +4,12 @@ import ooo.paulsen.audiocontrol.AudioManager;
 import ooo.paulsen.io.PDataStorage;
 import ooo.paulsen.io.PFolder;
 import ooo.paulsen.ui.UI;
+import ooo.paulsen.utils.PInstance;
 import ooo.paulsen.utils.PSystem;
 
 import javax.swing.*;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.PrintStream;
+import java.io.*;
+import java.net.BindException;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -21,19 +20,33 @@ import java.util.TimerTask;
  */
 public class Main {
 
-    public static final String version = "b2.2.1";
+    // Change before Commit or Build
+    public static final String version = "b2.2.2";
     private static final boolean devMode = false;
 
+    // Folder in Home-dir
     public static final String saveDir = System.getProperty("user.home") + PSystem.getFileSeparator() + ".jaudiocontroller";
-
     public static UI ui;
     public static AudioManager am;
+
+    private static PInstance instance;
 
     // Only private to not accidentally be instanced
     private Main() {
     }
 
     public static void main(String[] args) {
+
+        //
+        try {
+            instance = new PInstance(6434);
+        } catch (BindException e) {
+            JOptionPane.showMessageDialog(null, "AudioController already running!", "AudioController", JOptionPane.INFORMATION_MESSAGE);
+            System.exit(0);
+        } catch (IOException e) {
+            System.err.println("[Main] :: some Problem with checking for another Instance");
+            e.printStackTrace();
+        }
 
         initVariables();
 
@@ -91,9 +104,8 @@ public class Main {
     /**
      * Opens UserPopup for closing the Program
      */
-    public static void close(){
+    public static void close() {
         if (ui.f.getUserConfirm("Really Close Audio Controller", "Audio Controller")) {
-            ui.f.dispose();
             Main.exitAll();
         }
     }

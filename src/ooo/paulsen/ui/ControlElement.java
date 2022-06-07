@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 public class ControlElement extends PUIElement {
 
-    private PUIScrollPanel groups;
+    private PUIList groups;
     private PUIRotaryControl rotaryControl;
     private PUIElement removeControl, addGroup;
 
@@ -71,7 +71,7 @@ public class ControlElement extends PUIElement {
         rotaryControl.doPaintOverOnPress(false);
         rotaryControl.setValue_NoUpdate(0f);
 
-        groups = new PUIScrollPanel(getFrame(), getInteractionLayer() + 1);
+        groups = new PUIList(getFrame(), getInteractionLayer() + 1);
         groups.setShowedElements(3);
         groups.doPaintOverOnHover(false);
         groups.doPaintOverOnPress(false);
