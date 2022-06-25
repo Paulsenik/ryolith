@@ -9,7 +9,6 @@ import ooo.paulsen.utils.PSystem;
 
 import javax.swing.*;
 import java.io.*;
-import java.net.BindException;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -21,11 +20,12 @@ import java.util.TimerTask;
 public class Main {
 
     // Change before Commit or Build
-    public static final String version = "b2.2.2";
+    public static final String version = "b2.2.2a";
     private static final boolean devMode = false;
 
     // Folder in Home-dir
     public static final String saveDir = System.getProperty("user.home") + PSystem.getFileSeparator() + ".jaudiocontroller";
+    public static final int PORT = 6434;
     public static UI ui;
     public static AudioManager am;
 
@@ -39,13 +39,18 @@ public class Main {
 
         //
         try {
-            instance = new PInstance(6434);
-        } catch (BindException e) {
-            JOptionPane.showMessageDialog(null, "AudioController already running!", "AudioController", JOptionPane.INFORMATION_MESSAGE);
+            instance = new PInstance(PORT, new Runnable() {
+                @Override
+                public void run() {
+                    focusOnFrame();
+                    ui.f.setVisible(true);
+                    ui.f.setState(JFrame.NORMAL);
+                    focusOnFrame();
+                }
+            });
+        } catch (IOException e) { // other Instace is running
+            // JOptionPane.showMessageDialog(null, "AudioController already running!", "AudioController", JOptionPane.INFORMATION_MESSAGE);
             System.exit(0);
-        } catch (IOException e) {
-            System.err.println("[Main] :: some Problem with checking for another Instance");
-            e.printStackTrace();
         }
 
         initVariables();
@@ -93,6 +98,14 @@ public class Main {
         }, 5 * 60 * 1000, 10 * 60 * 1000);
     }
 
+    /**
+     * Show and bring frame on top
+     */
+    public static void focusOnFrame() {
+        ui.f.toFront();
+        ui.f.requestFocus();
+    }
+
     public static void setControlVolume(String controlName, float volume) {
         for (Control c : Control.getControls())
             if (c != null && c.getName().equals(controlName)) {
@@ -105,6 +118,7 @@ public class Main {
      * Opens UserPopup for closing the Program
      */
     public static void close() {
+        focusOnFrame();
         if (ui.f.getUserConfirm("Really Close Audio Controller", "Audio Controller")) {
             Main.exitAll();
         }
