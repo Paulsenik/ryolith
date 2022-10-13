@@ -1,9 +1,6 @@
 package ooo.paulsen;
 
-import ooo.paulsen.audiocontrol.AudioManager;
-
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Group {

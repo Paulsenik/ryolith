@@ -53,7 +53,6 @@ public class AudioManager {
                 throw new Exception("This Operating-System is not supported!\nDetected: " + PSystem.getOSType());
             }
         }
-
     }
 
     private void initListener() {

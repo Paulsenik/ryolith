@@ -20,7 +20,7 @@ import java.util.TimerTask;
 public class Main {
 
     // Change before Commit or Build
-    public static final String version = "b2.2.2a";
+    public static final String version = "b2.2.2b";
     private static final boolean devMode = false;
 
     // Folder in Home-dir

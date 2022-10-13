@@ -148,10 +148,20 @@ public class UI {
 
     public UI() {
 
-        // PUI - DarkMODE
-        PUIElement.darkUIMode = true;
-
         f = new PUIFrame(TITLE, 1300, 600, false);
+
+        // Main/Text
+        PUIElement.setDefaultColor(1, new Color(240, 240, 240));
+
+        PUIElement.setDefaultColor(4, new Color(75, 75, 75));
+
+        PUIElement.setDefaultColor(10, new Color(44, 183, 14, 255));
+        PUIElement.setDefaultColor(11, new Color(227, 35, 35, 255));
+        PUIElement.setDefaultColor(12, new Color(4, 185, 24));
+        PUIElement.setDefaultColor(13, new Color(168, 76, 18));
+
+        PUIElement.setDefaultColor(20, new Color(0, 0, 0, 20));
+        PUIElement.setDefaultColor(21, new Color(255, 255, 255, 5));
 
         try {
             img = ImageIO.read(new File("Audio.png"));
@@ -276,15 +286,10 @@ public class UI {
         minimizeUI.setDraw(new PUIPaintable() {
             @Override
             public void paint(Graphics2D g, int x, int y, int w, int h) {
-                g.setColor(PUIElement.darkBG_1);
-                g.fillRect(x, y, w, h);
-                g.setColor(PUIElement.darkOutline);
-                g.drawRect(x, y, w, h);
-
                 int space = Math.min(w, h) / 6;
 
-                g.setColor(Color.white);
-                g.fillRect(x + space, y + h - space * 2, w - space * 2, space);
+                g.setColor(minimizeUI.getTextColor());
+                g.fillRoundRect(x + space, y + h - space * 2, w - space * 2, space, 10, 10);
             }
         });
 
@@ -300,22 +305,16 @@ public class UI {
         settingsUI.setDraw(new PUIPaintable() {
             @Override
             public void paint(Graphics2D g, int x, int y, int w, int h) {
-                g.setColor(PUIElement.darkBG_1);
-                g.fillRect(x, y, w, h);
-                g.setColor(PUIElement.darkOutline);
-                g.drawRect(x, y, w, h);
-
                 float space = ((float) Math.min(w, h)) / 7f;
 
-                g.setColor(Color.white);
-                g.fillRect((int) (x + space), (int) (y + space), (int) (w - space * 2), (int) space);
-                g.fillRect((int) (x + space), (int) (y + space * 3), (int) (w - space * 2), (int) space);
-                g.fillRect((int) (x + space), (int) (y + space * 5), (int) (w - space * 2), (int) space);
+                g.setColor(settingsUI.getTextColor());
+                g.fillRoundRect((int) (x + space), (int) (y + space), (int) (w - space * 2), (int) space, 5, 5);
+                g.fillRoundRect((int) (x + space), (int) (y + space * 3), (int) (w - space * 2), (int) space, 5, 5);
+                g.fillRoundRect((int) (x + space), (int) (y + space * 5), (int) (w - space * 2), (int) space, 5, 5);
             }
         });
 
         serialButton = new PUIText(f, "-");
-        serialButton.setTextColor(new Color(20, 116, 171));
         serialButton.addActionListener(new PUIAction() {
             @Override
             public void run(PUIElement that) {
@@ -361,24 +360,21 @@ public class UI {
         audioControlUI.setAlignment(PUIElement.ElementAlignment.HORIZONTAL);
         audioControlUI.setShowedElements(4);
         audioControlUI.setSliderWidth(f.getHeight() / 20);
+        audioControlUI.setBackgroundColor(PUIElement.getDefaultColor(20));
 
         // // addAudioControlB
         addAudioControlB = new PUIElement(f);
         addAudioControlB.setDraw(new PUIPaintable() {
             @Override
             public void paint(Graphics2D g, int x, int y, int w, int h) {
-                g.setColor(PUIElement.darkBG_1);
-                g.fillRect(x, y, w, h);
-                g.setColor(PUIElement.darkOutline);
-                g.drawRect(x, y, w, h);
-
                 int space = Math.min(w, h) / 6;
 
-                g.setColor(Color.white);
-                g.fillRect(x + space, y + h / 2 - space / 2, w - space * 2, space);
-                g.fillRect(x + w / 2 - space / 2, y + space, space, h - space * 2);
+                g.setColor(addAudioControlB.getTextColor());
+                g.fillRoundRect(x + space, y + h / 2 - space / 2, w - space * 2, space, 5, 5);
+                g.fillRoundRect(x + w / 2 - space / 2, y + space, space, h - space * 2, 5, 5);
             }
         });
+
         addAudioControlB.addActionListener(new PUIAction() {
             @Override
             public void run(PUIElement that) {
@@ -445,15 +441,10 @@ public class UI {
         removeGroupB.setDraw(new PUIPaintable() {
             @Override
             public void paint(Graphics2D g, int x, int y, int w, int h) {
-                g.setColor(PUIElement.darkBG_1);
-                g.fillRect(x, y, w, h);
-                g.setColor(PUIElement.darkOutline);
-                g.drawRect(x, y, w, h);
-
                 int space = Math.min(w, h) / 6;
 
-                g.setColor(Color.white);
-                g.fillRect(x + space, y + h / 2 - space / 2, w - space * 2, space);
+                g.setColor(removeGroupB.getTextColor());
+                g.fillRoundRect(x + space, y + h / 2 - space / 2, w - space * 2, space, 5, 5);
             }
         });
 
@@ -469,17 +460,13 @@ public class UI {
         refreshProcessesB.setDraw(new PUIPaintable() {
             @Override
             public void paint(Graphics2D g, int x, int y, int w, int h) {
-                g.setColor(PUIElement.darkBG_1);
-                g.fillRect(x, y, w, h);
-                g.setColor(PUIElement.darkOutline);
-                g.drawRect(x, y, w, h);
 
                 int space = (int) (Math.min(w, h) * 0.3);
                 int space2 = Math.min(w, h) / 6;
 
-                g.setColor(Color.white);
+                g.setColor(refreshProcessesB.getTextColor());
                 g.fillOval(x + space2, y + space2, w - space2 * 2, h - space2 * 2); // outer circle
-                g.setColor(PUIElement.darkBG_1);
+                g.setColor(new Color(64, 64, 64));
                 g.fillOval(x + space, y + space, w - space * 2, h - space * 2); // inner circle
                 g.fillRect(x + space, y + h / 2, w / 2 - space + 1, h / 2); // cut off down-left-section
 
@@ -490,7 +477,7 @@ public class UI {
                 poly[1][1] = (int) (y + h * 0.9);
                 poly[0][2] = (int) (x + w * 0.4); //x
                 poly[1][2] = y + h - h / 4;
-                g.setColor(Color.white);
+                g.setColor(refreshProcessesB.getTextColor());
                 g.fillPolygon(poly[0], poly[1], poly[0].length);
             }
         });
@@ -501,12 +488,12 @@ public class UI {
 
                 updateRotaryControls();
 
-                g.setColor(new Color(49, 49, 49));
+                g.setColor(PUIElement.getDefaultColor(20));
                 g.fillRect(0, 0, w + 10, bHeight + space / 2);
-                g.setColor(new Color(42, 42, 42));
+                g.setColor(PUIElement.getDefaultColor(20));
                 g.fillRect(0, bHeight + space / 2, w + 10, 2);
 
-                g.setColor(new Color(108, 108, 108));
+                g.setColor(PUIElement.getDefaultColor(6));
                 g.setFont(new Font("Arial", Font.PLAIN, space));
                 g.drawString(Main.version, 0, h);
 
@@ -515,11 +502,11 @@ public class UI {
                 // Top-Bar
                 int textY = bHeight / 2 - space / 4;
                 // // USB
-                g.setColor(Main.am.isSerialConnected() ? new Color(4, 189, 24) : new Color(231, 10, 53));
+                g.setColor(Main.am.isSerialConnected() ? PUIElement.getDefaultColor(10) : PUIElement.getDefaultColor(11));
                 g.fillOval(bHeight + space / 2, space / 2, bHeight / 2 - space, bHeight / 2 - space);
                 g.drawString("USB", bHeight + bHeight / 2, textY);
                 // // Audio
-                g.setColor(Main.am.isAudioConnected() ? new Color(4, 189, 24) : new Color(231, 10, 53));
+                g.setColor(Main.am.isAudioConnected() ? PUIElement.getDefaultColor(10) : PUIElement.getDefaultColor(11));
                 g.fillOval(bHeight + space / 2, space / 2 + bHeight / 2, bHeight / 2 - space, bHeight / 2 - space);
                 g.drawString("Audio", bHeight + bHeight / 2, bHeight / 2 + textY);
 
@@ -533,12 +520,12 @@ public class UI {
                 // Menu
                 if (isSettings) {
 
-                    g.setColor(Color.white);
+                    g.setColor(PUIElement.getDefaultColor(1));
                     g.drawString("Groups", space, space / 2 + bHeight + textHeight);
                     g.drawString("Programs", w / 2 + space, space / 2 + bHeight + textHeight);
 
                 } else { // Main-Screen
-                    g.setColor(Color.white);
+                    g.setColor(PUIElement.getDefaultColor(1));
                     g.drawString("Controls", space, space / 2 + bHeight + textHeight);
                 }
             }
@@ -641,9 +628,9 @@ public class UI {
                 @Override
                 public void draw(Graphics2D g) {
                     if (!((boolean) getMetadata())) {
-                        setBackgroundColor(new Color(208, 96, 4));
+                        setBackgroundColor(getDefaultColor(13));
                     } else {
-                        setBackgroundColor(new Color(37, 175, 4));
+                        setBackgroundColor(getDefaultColor(12));
                     }
                     super.draw(g);
                 }
@@ -703,9 +690,9 @@ public class UI {
                     Group group = Group.getGroup(selectedGroup);
 
                     if (group != null && group.getProcesses().contains(((PUIText) e).getText())) {
-                        g.setColor(new Color(37, 175, 4));
+                        g.setColor(PUIElement.getDefaultColor(12));
                     } else {
-                        g.setColor(new Color(208, 96, 4));
+                        g.setColor(PUIElement.getDefaultColor(13));
                     }
 
                     g.fillRect(x, y, w, h);
@@ -771,8 +758,9 @@ public class UI {
         }
         f.repaint();
 
+        // TODO replace for windows
         if (PSystem.getOSType() == PSystem.OSType.WINDOWS)
-            sendUserPopUp("testtitle", "updatemessage");
+            sendUserPopUp("Not Supported", "Is not supported yet");
         // Maybe add library for Linux/Gnome-support
     }
 

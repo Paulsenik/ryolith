@@ -34,12 +34,10 @@ public class ControlElement extends PUIElement {
                 if (!isEnabled())
                     return;
 
-                super.draw(g);
-
                 int space = Math.min(w, h) / 6;
 
-                g.setColor(Color.white);
-                g.fillRect(x + space, y + h / 2 - space / 2, w - space * 2, space);
+                g.setColor(removeControl.getTextColor());
+                g.fillRoundRect(x + space, y + h / 2 - space / 2, w - space * 2, space, 5, 5);
             }
         };
         removeControl.setMetadata(this); // set this ControlElement as reference for the ActionListeners
@@ -75,6 +73,7 @@ public class ControlElement extends PUIElement {
         groups.setShowedElements(3);
         groups.doPaintOverOnHover(false);
         groups.doPaintOverOnPress(false);
+        groups.setBackgroundColor(new Color(0,0,0,0));
 
         addGroup = new PUIElement(getFrame(), getInteractionLayer() + 1) {
             @Override
@@ -82,13 +81,11 @@ public class ControlElement extends PUIElement {
                 if (!isEnabled())
                     return;
 
-                super.draw(g);
-
                 int space = Math.min(w, h) / 6;
 
                 g.setColor(Color.white);
-                g.fillRect(x + space, y + h / 2 - space / 2, w - space * 2, space);
-                g.fillRect(x + w / 2 - space / 2, y + space, space, h - space * 2);
+                g.fillRoundRect(x + space, y + h / 2 - space / 2, w - space * 2, space,5,5);
+                g.fillRoundRect(x + w / 2 - space / 2, y + space, space, h - space * 2,5,5);
             }
         };
         addGroup.setMetadata(this); // set this ControlElement as reference for the ActionListeners
@@ -151,6 +148,7 @@ public class ControlElement extends PUIElement {
         for (String s : groupNames) {
             PUIText t = new PUIText(frame, s);
 
+            t.setBackgroundColor(PUIElement.getDefaultColor(21));
             t.setMetadata(this); // here, metadata represents if it's selected in the UI
 
             t.addActionListener(new PUIAction() {
@@ -198,12 +196,13 @@ public class ControlElement extends PUIElement {
         if (!isEnabled())
             return;
 
-        super.draw(g);
+        g.setColor(PUIElement.getDefaultColor(21));
+        g.fillRoundRect(x+1,y,w-2,topSize,15,15);
 
         Shape c = g.getClip();
         g.setClip(x, y, w, h);
 
-        g.setColor(Color.white);
+        g.setColor(PUIElement.getDefaultColor(1));
         g.setFont(new Font("Arial", Font.PLAIN, topSize));
         g.drawString(name, x, (int) (y + topSize * 0.9));
 
@@ -217,6 +216,9 @@ public class ControlElement extends PUIElement {
         rotaryControl.draw(g);
         addGroup.draw(g);
         groups.draw(g);
+
+        g.setColor(PUIElement.getDefaultColor(3));
+        g.drawRoundRect(x-1,y-1,w+2,h+2,15,15);
     }
 
     @Override
