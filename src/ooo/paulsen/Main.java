@@ -21,7 +21,7 @@ public class Main {
 
     // Change before Commit or Build
     public static final String version = "b2.2.2b";
-    private static final boolean devMode = false;
+    private static final boolean devMode = true;
 
     // Folder in Home-dir
     public static final String saveDir = System.getProperty("user.home") + PSystem.getFileSeparator() + ".jaudiocontroller";

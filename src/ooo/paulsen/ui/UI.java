@@ -671,68 +671,90 @@ public class UI {
 
     public synchronized void updateProcessList() {
         HashSet<String> processSet = new HashSet<>();
+        HashSet<String> activeProcessSet = new HashSet<>();
 
         for (Group g : Group.groups)
             processSet.addAll(g.getProcesses());
 
+        // Currently active processes that have played audio since start
         if (Main.am.getProcesses() != null)
-            processSet.addAll(Main.am.getProcesses());
+            activeProcessSet.addAll(Main.am.getProcesses());
 
         ArrayList<PUIElement> elems = new ArrayList<>();
         for (String process : processSet) {
-            PUIElement e = new PUIText(f, process);
-            e.setDraw(new PUIPaintable() {
-                @Override
-                public void paint(Graphics2D g, int x, int y, int w, int h) {
-                    if (!e.isEnabled())
-                        return;
-
-                    Group group = Group.getGroup(selectedGroup);
-
-                    if (group != null && group.getProcesses().contains(((PUIText) e).getText())) {
-                        g.setColor(PUIElement.getDefaultColor(12));
-                    } else {
-                        g.setColor(PUIElement.getDefaultColor(13));
-                    }
-
-                    g.fillRect(x, y, w, h);
-                }
-            });
-
-            e.addActionListener(new PUIAction() {
-                @Override
-                public void run(PUIElement puiElement) {
-                    System.out.println("Clicked " + ((PUIText) puiElement).getText());
-
-                    Group g = Group.getGroup(selectedGroup);
-
-                    if (g != null) {
-                        String name = ((PUIText) puiElement).getText();
-
-                        if (g.getProcesses().contains(name)) { // Group already has this Process
-
-                            if (f.getUserConfirm("Remove \"" + name + "\" ?", "Group: " + g.getName())) {
-                                g.removeProcess(name);
-                                updateProcessList();
-                            }
-
-                        } else {
-                            g.addProcess(name);
-                            updateProcessList();
-                        }
-                    }
-
-                }
-            });
-
-            elems.add(e);
+            elems.add(getProcessElement(process, false));
+        }
+        // active processes
+        for (String process : activeProcessSet) {
+            elems.add(getProcessElement(process, true));
         }
 
         // refresh List
         processPanel.clearElements();
+
+        for (PUIElement e : elems) {
+            System.out.println(((PUIText) e).getText());
+        }
+
         processPanel.addAllElements(elems);
 
         f.updateElements();
+    }
+
+    public PUIElement getProcessElement(String processName, boolean isActive) {
+        PUIElement e = new PUIText(f, processName);
+        e.setMetadata(isActive);
+        e.setDraw(new PUIPaintable() {
+            @Override
+            public void paint(Graphics2D g, int x, int y, int w, int h) {
+                if (!e.isEnabled())
+                    return;
+
+                Group group = Group.getGroup(selectedGroup);
+
+                if (group != null && group.getProcesses().contains(((PUIText) e).getText())) {
+                    g.setColor(PUIElement.getDefaultColor(12));
+                } else {
+                    g.setColor(PUIElement.getDefaultColor(13));
+                }
+
+                Boolean b = (Boolean) e.getMetadata();
+                if (b != null) {
+                    if (b)
+                        System.out.println(((PUIText) e).getText());
+                }
+
+                g.fillRoundRect(x, y, w, h, 15, 15);
+            }
+        });
+
+        e.addActionListener(new PUIAction() {
+            @Override
+            public void run(PUIElement puiElement) {
+                System.out.println("Clicked " + ((PUIText) puiElement).getText());
+
+                Group g = Group.getGroup(selectedGroup);
+
+                if (g != null) {
+                    String name = ((PUIText) puiElement).getText();
+
+                    if (g.getProcesses().contains(name)) { // Group already has this Process
+
+                        if (f.getUserConfirm("Remove \"" + name + "\" ?", "Group: " + g.getName())) {
+                            g.removeProcess(name);
+                            updateProcessList();
+                        }
+
+                    } else {
+                        g.addProcess(name);
+                        updateProcessList();
+                    }
+                }
+
+            }
+        });
+
+        return e;
     }
 
     public synchronized void updateRotaryControls() {
