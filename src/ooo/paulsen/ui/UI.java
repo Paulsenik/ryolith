@@ -156,9 +156,7 @@ public class UI {
         PUIElement.setDefaultColor(4, new Color(75, 75, 75));
 
         PUIElement.setDefaultColor(10, new Color(44, 183, 14, 255));
-        PUIElement.setDefaultColor(11, new Color(227, 35, 35, 255));
-        PUIElement.setDefaultColor(12, new Color(4, 185, 24));
-        PUIElement.setDefaultColor(13, new Color(168, 76, 18));
+        PUIElement.setDefaultColor(11, new Color(222, 40, 40, 255));
 
         PUIElement.setDefaultColor(20, new Color(0, 0, 0, 20));
         PUIElement.setDefaultColor(21, new Color(255, 255, 255, 5));
@@ -628,9 +626,9 @@ public class UI {
                 @Override
                 public void draw(Graphics2D g) {
                     if (!((boolean) getMetadata())) {
-                        setBackgroundColor(getDefaultColor(13));
+                        setBackgroundColor(getDefaultColor(11));
                     } else {
-                        setBackgroundColor(getDefaultColor(12));
+                        setBackgroundColor(getDefaultColor(10));
                     }
                     super.draw(g);
                 }
@@ -673,28 +671,31 @@ public class UI {
         HashSet<String> processSet = new HashSet<>();
         HashSet<String> activeProcessSet = new HashSet<>();
 
-        for (Group g : Group.groups)
-            processSet.addAll(g.getProcesses());
-
         // Currently active processes that have played audio since start
-        if (Main.am.getProcesses() != null)
-            activeProcessSet.addAll(Main.am.getProcesses());
+        if (Main.am.getProcesses() != null) activeProcessSet.addAll(Main.am.getProcesses());
+
+        for (Group g : Group.groups) {
+            for (String p : g.getProcesses()) {
+                if (!activeProcessSet.contains(p))
+                    processSet.addAll(g.getProcesses());
+            }
+        }
 
         ArrayList<PUIElement> elems = new ArrayList<>();
-        for (String process : processSet) {
-            elems.add(getProcessElement(process, false));
-        }
+
         // active processes
         for (String process : activeProcessSet) {
             elems.add(getProcessElement(process, true));
+            System.out.println("cached: " + process); // TODO REMOVE
+        }
+
+        for (String process : processSet) {
+            elems.add(getProcessElement(process, false));
+            System.out.println("saved: " + process); // TODO REMOVE
         }
 
         // refresh List
         processPanel.clearElements();
-
-        for (PUIElement e : elems) {
-            System.out.println(((PUIText) e).getText());
-        }
 
         processPanel.addAllElements(elems);
 
@@ -713,18 +714,23 @@ public class UI {
                 Group group = Group.getGroup(selectedGroup);
 
                 if (group != null && group.getProcesses().contains(((PUIText) e).getText())) {
-                    g.setColor(PUIElement.getDefaultColor(12));
+                    g.setColor(PUIElement.getDefaultColor(10));
                 } else {
-                    g.setColor(PUIElement.getDefaultColor(13));
-                }
-
-                Boolean b = (Boolean) e.getMetadata();
-                if (b != null) {
-                    if (b)
-                        System.out.println(((PUIText) e).getText());
+                    g.setColor(PUIElement.getDefaultColor(11));
                 }
 
                 g.fillRoundRect(x, y, w, h, 15, 15);
+
+                Object o = e.getMetadata();
+                if (o != null && o instanceof Boolean) {
+                    boolean b = (boolean) o;
+                    if (!b) {
+                        g.setColor(new Color(0,0,0,100));
+                        g.fillRoundRect(x, y, w, h, 15, 15);
+                        System.out.println(((PUIText) e).getText() + " läuft nicht"); // TODO REMOVE
+                    }
+                }
+
             }
         });
 

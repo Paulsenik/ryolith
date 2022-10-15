@@ -50,6 +50,7 @@ public class Main {
             });
         } catch (IOException e) { // other Instace is running
             // JOptionPane.showMessageDialog(null, "AudioController already running!", "AudioController", JOptionPane.INFORMATION_MESSAGE);
+            System.out.println("[AudioController] : [main] : Already running! Opened other instance.");
             System.exit(0);
         }
 

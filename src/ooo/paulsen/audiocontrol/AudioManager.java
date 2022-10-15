@@ -136,6 +136,8 @@ public class AudioManager {
     }
 
     public ArrayList<String> getProcesses() {
+        for (String s : processes)
+            System.out.println("- " + s);
         return processes;
     }
 
