@@ -9,6 +9,7 @@ import ooo.paulsen.utils.PInstance;
 import ooo.paulsen.utils.PSystem;
 
 import javax.swing.*;
+import java.awt.*;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -30,6 +31,9 @@ public class Main {
 
     // Folder in Home-dir
     public static final String saveDir = System.getProperty("user.home") + PSystem.getFileSeparator() + ".jaudiocontroller";
+    public static final String localEXEPath = saveDir + PSystem.getFileSeparator() + "WinAudioControl.exe";
+    public static final String webEXEPath_1 = "https://raw.githubusercontent.com/realPaulsen/AudioController/Release/src/ooo/paulsen/python/dist/WinAudioControl.exe";
+    public static final String webEXEPath_2 = "https://raw.githubusercontent.com/realPaulsen/AudioController/v2_in_development/src/ooo/paulsen/python/dist/WinAudioControl.exe"; // Backup-link
     public static final int PORT = 6434;
     public static UI ui;
     public static AudioManager am;
@@ -295,14 +299,19 @@ public class Main {
      * @return true: if depedencys are up-to-date and working - false: if the update failed.
      */
     public static boolean updateDependencys(){
-        System.out.println("do something");
-        if(downloadFile("https://raw.githubusercontent.com/realPaulsen/AudioController/v2_in_development/src/ooo/paulsen/python/dist/WinAudioControl.exe",saveDir+PSystem.getFileSeparator()+"WinAudioControl.exe")){
+        if(downloadFile(webEXEPath_1,localEXEPath)){
 
-        }else{
-            System.err.println("Something went wrong");
-            return false;
+            System.out.println("Successfully updated WindowsAudioControl.exe from direct-link");
+            return true;
+        }else if(downloadFile(webEXEPath_2,localEXEPath)){
+
+            System.out.println("Successfully updated WindowsAudioControl.exe from backup-link");
+            return true;
+        }else if(new File(localEXEPath).exists()) { // file exists but is not the newest
+            JOptionPane.showMessageDialog(null, "Could not download mandatory dependency for your OS", "Startup-Warning", JOptionPane.INFORMATION_MESSAGE);
+            return true;
         }
-
+        // exit if an error occurred and no local dependencys exist
         return false;
     }
 

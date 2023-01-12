@@ -25,8 +25,7 @@ public class AudioControllerWin extends AudioController {
             // TODO
 
         } else {
-            Component mainWindow = Main.ui == null ? null : Main.ui.f;
-            JOptionPane.showMessageDialog(mainWindow, "The AudioController might no be installed/set up correctly\nDetected OS: " +
+            JOptionPane.showMessageDialog(null, "The AudioController might no be installed/set up correctly\nDetected OS: " +
                     PSystem.getOSType() + "\nRunning Python-Script returns ERROR!", "Startup-Error", JOptionPane.ERROR_MESSAGE);
             System.exit(0);
         }

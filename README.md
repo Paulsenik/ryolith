@@ -29,8 +29,8 @@ If you want to edit the configs manually (at your own risk), you can find them *
 
 ### Windows (***!! Currently Not Working !!***)
 
-*Autoinstall of Python-Script for controlling audio comming soon...*
-
+Just download the latest `.jar` and run it.<br>
+It should automatically download/update any files needed.
 
 ## Build-Note
 
@@ -40,7 +40,6 @@ If you want to edit the configs manually (at your own risk), you can find them *
 
 ## TODOs
 
-* Reimplement **Windows**-Python-Script into `AudioControllerWin`
-* Package Python-Script into binary (pyinstaller)
+* Reimplement **Windows**-Python-Binary into `AudioControllerWin`
 * add Min- & Max-Values for Processes
 * Serial-Protocol for directly controlling a processes' Volume
