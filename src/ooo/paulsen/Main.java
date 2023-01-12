@@ -2,6 +2,7 @@ package ooo.paulsen;
 
 import ooo.paulsen.audiocontrol.AudioManager;
 import ooo.paulsen.io.PDataStorage;
+import ooo.paulsen.io.PFile;
 import ooo.paulsen.io.PFolder;
 import ooo.paulsen.ui.UI;
 import ooo.paulsen.utils.PInstance;
@@ -291,10 +292,18 @@ public class Main {
 
     /**
      * Updates the python-dependencys from the GiHub-Repository by downloading the newest WAC-Binary (Windows Audio Control)
+     * @return true: if depedencys are up-to-date and working - false: if the update failed.
      */
-    public static void DLDependencys(){
-        downloadFile("https://raw.githubusercontent.com/realPaulsen/AudioController/v2_in_development/Python/WinAudioControl.py","test.py");
+    public static boolean updateDependencys(){
+        System.out.println("do something");
+        if(downloadFile("https://raw.githubusercontent.com/realPaulsen/AudioController/v2_in_development/src/ooo/paulsen/python/dist/WinAudioControl.exe",saveDir+PSystem.getFileSeparator()+"WinAudioControl.exe")){
 
+        }else{
+            System.err.println("Something went wrong");
+            return false;
+        }
+
+        return false;
     }
 
     /**
@@ -304,14 +313,17 @@ public class Main {
      * @return true: if download successful - false: if some error occured
      */
     public static boolean downloadFile(String url, String filepath){
+        System.out.println(filepath);
         try {
             URL website = new URL(url);
             InputStream in = website.openStream();
             Files.copy(in, new File(filepath).toPath(), StandardCopyOption.REPLACE_EXISTING);
             return true;
         } catch (MalformedURLException e) {
+            e.printStackTrace();
             return false;
         } catch (IOException e) {
+            e.printStackTrace();
             return false;
         }
     }

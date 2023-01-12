@@ -18,10 +18,7 @@ If you want to edit the configs manually (at your own risk), you can find them *
 1. Before **using USB-Control** you might need to **add your User** to some of those **4 groups**<br>
    Don't worry if some of the commands fail. All of these groups may not exist on every Linux distro.
     ```shell
-    sudo usermod -a -G uucp <your_username>
-    sudo usermod -a -G dialout <your_username>
-    sudo usermod -a -G lock <your_username>
-    sudo usermod -a -G tty <your_username>
+    sudo usermod -a -G uucp,dialout,tty <your_username>
     ```
     If you are **using SUSE 11.3 or higher**, replace the **'-a -G'** flags with a single **'-A'** flag.
 
@@ -32,17 +29,7 @@ If you want to edit the configs manually (at your own risk), you can find them *
 
 ### Windows (***!! Currently Not Working !!***)
 
-
-
-1. Pyhton-Script needs **additional modules**. Just try to run in console, see what's missing and install it via `pip`😅🤦
-
-2. Create those Folders and put the `pycaw`-Folder and `WinAudioControl.py` in the `Python`-Folder
-   > AudioController.jar <br>
-   > > AudioController/Python/ <br>
-   > > *--put pycaw and script in here--*
-
-
-*Autoinstall of modules in Python-Script comming soon...*
+*Autoinstall of Python-Script for controlling audio comming soon...*
 
 
 ## Build-Note
