@@ -48,6 +48,8 @@ If you want to edit the configs manually (at your own risk), you can find them *
 ## Build-Note
 
 * Import latest build of [Java-Project-Library](https://github.com/realPaulsen/Java-Project-Library) into Project before building
+* Build python-binary with:
+  > pyinstaller --onefile .\Python\WinAudioControl.py
 
 ## TODOs
 

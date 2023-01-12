@@ -3,6 +3,9 @@
 bin/
 out/
 
+src/ooo/paulsen/python/build
+src/ooo/paulsen/python/dist
+
 # Log file
 *.log
 

@@ -5,6 +5,7 @@ import ooo.paulsen.utils.PConsole;
 import ooo.paulsen.utils.PSystem;
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -23,8 +24,10 @@ public class AudioControllerLinux extends AudioController {
         super();
         doesPactlExist = !PConsole.run("pactl stat").contains("ERROR");
 
+        Component mainWindow = Main.ui == null ? null : Main.ui.f;
+
         if (!doesPactlExist)
-            JOptionPane.showMessageDialog(Main.ui.f, "The AudioController might no be installed/set up correctly\nDetected OS: " +
+            JOptionPane.showMessageDialog(mainWindow, "The AudioController might no be installed/set up correctly\nDetected OS: " +
                     PSystem.getOSType() + "\nRunning \"pactl stat\" returns ERROR!", "Startup-Error", JOptionPane.ERROR_MESSAGE);
     }
 

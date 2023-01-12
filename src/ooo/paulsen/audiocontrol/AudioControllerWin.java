@@ -1,17 +1,28 @@
 package ooo.paulsen.audiocontrol;
 
 import ooo.paulsen.Main;
+import ooo.paulsen.ui.UI;
 import ooo.paulsen.utils.PSystem;
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class AudioControllerWin extends AudioController {
+
+    /**
+     * String = ProcessName<br>
+     * Integer = ProcessID
+     */
+    private volatile HashMap<String, ArrayList<Integer>> processes = new HashMap<>();
 
     public AudioControllerWin(){
         super();
 
-        JOptionPane.showMessageDialog(Main.ui.f, "The AudioController might no be installed/set up correctly\nDetected OS: " +
+        Component mainWindow = Main.ui == null ? null : Main.ui.f;
+
+        JOptionPane.showMessageDialog(mainWindow, "The AudioController might no be installed/set up correctly\nDetected OS: " +
                 PSystem.getOSType() + "\nRunning Python-Script returns ERROR!", "Startup-Error", JOptionPane.ERROR_MESSAGE);
     }
 

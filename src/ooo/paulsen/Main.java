@@ -9,6 +9,10 @@ import ooo.paulsen.utils.PSystem;
 
 import javax.swing.*;
 import java.io.*;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -37,7 +41,6 @@ public class Main {
 
     public static void main(String[] args) {
 
-        //
         try {
             instance = new PInstance(PORT, new Runnable() {
                 @Override
@@ -237,7 +240,6 @@ public class Main {
         System.out.println("[Main] :: ...variables initialized");
     }
 
-
     public static void saveVariables() {
         System.out.println("[Main] :: saveVariables() ...");
 
@@ -285,6 +287,33 @@ public class Main {
         settings.save(saveDir + PSystem.getFileSeparator() + "settings.cfg");
 
         System.out.println("[Main] :: ...variables saved");
+    }
+
+    /**
+     * Updates the python-dependencys from the GiHub-Repository by downloading the newest WAC-Binary (Windows Audio Control)
+     */
+    public static void DLDependencys(){
+        downloadFile("https://raw.githubusercontent.com/realPaulsen/AudioController/v2_in_development/Python/WinAudioControl.py","test.py");
+
+    }
+
+    /**
+     * Downloads File from given web-url and saves/overwrites it to the given local destination
+     * @param url
+     * @param filepath
+     * @return true: if download successful - false: if some error occured
+     */
+    public static boolean downloadFile(String url, String filepath){
+        try {
+            URL website = new URL(url);
+            InputStream in = website.openStream();
+            Files.copy(in, new File(filepath).toPath(), StandardCopyOption.REPLACE_EXISTING);
+            return true;
+        } catch (MalformedURLException e) {
+            return false;
+        } catch (IOException e) {
+            return false;
+        }
     }
 
 }
