@@ -4,6 +4,7 @@ bin/
 out/
 
 src/ooo/paulsen/python/build
+*.spec
 
 # Log file
 *.log

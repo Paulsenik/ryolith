@@ -12,9 +12,12 @@ def mainLoop():
 
         if message.__eq__("exit"):
             outputAudioInfo()
-            exit(0)
+            sys.exit(0)
 
-        if not message.__eq__("null"):
+        elif message.__eq__("list"):
+            outputAudioInfo()
+
+        elif not message.__eq__("null"):
             processMessage(message)
 
 
@@ -67,8 +70,6 @@ def outputAudioInfo():
 
 
 def getProtocolMessage(input: str):
-    if input.__eq__(protocolName + "[exit]"):  # AudioProtocolRequest
-        return "exit"
     if input.startswith(protocolName + "[") and input.endswith("]"):
         # Convert placeholder to "[" "]" in message
         return input[4:-1].replace("^<<^", "[").replace("^>>^", "]")

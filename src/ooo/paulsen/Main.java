@@ -326,12 +326,12 @@ public class Main {
         try {
             URL website = new URL(url);
             InputStream in = website.openStream();
+            File f = new File(filepath);
+            if(f.exists())
+                PFile.deleteFile(filepath);
             Files.copy(in, new File(filepath).toPath(), StandardCopyOption.REPLACE_EXISTING);
             return true;
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-            return false;
-        } catch (IOException e) {
+        } catch (IOException | SecurityException e) {
             e.printStackTrace();
             return false;
         }

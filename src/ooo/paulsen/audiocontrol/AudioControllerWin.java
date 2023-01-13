@@ -1,11 +1,10 @@
 package ooo.paulsen.audiocontrol;
 
 import ooo.paulsen.Main;
-import ooo.paulsen.ui.UI;
 import ooo.paulsen.utils.PSystem;
 
 import javax.swing.*;
-import java.awt.*;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -23,6 +22,14 @@ public class AudioControllerWin extends AudioController {
         if(Main.updateDependencys()) {
 
             // TODO
+            if(false)
+                try {
+                    Process p = Runtime.getRuntime().exec(Main.localEXEPath);
+                    p.outputWriter().write("wac[list]\n");
+                    System.out.println(p.inputReader().readLine());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
 
         } else {
             JOptionPane.showMessageDialog(null, "The AudioController might no be installed/set up correctly\nDetected OS: " +
