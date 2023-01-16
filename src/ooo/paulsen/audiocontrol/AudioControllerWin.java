@@ -1,44 +1,41 @@
 package ooo.paulsen.audiocontrol;
 
 import ooo.paulsen.Main;
+import ooo.paulsen.io.PCustomProtocol;
+import ooo.paulsen.io.serial.PSerialConnection;
+import ooo.paulsen.io.serial.PSerialListener;
 import ooo.paulsen.utils.PSystem;
 
 import javax.swing.*;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Scanner;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class AudioControllerWin extends AudioController {
 
-    /**
-     * String = ProcessName<br>
-     * Integer = ProcessID
-     */
-    private volatile HashMap<String, ArrayList<Integer>> processes = new HashMap<>();
+    PCustomProtocol wacProtocol = new PCustomProtocol("wac",'[',']',"^<<^","^>>^");
+    private Process script;
 
     public AudioControllerWin(){
         super();
 
         if(Main.updateDependencys()) {
 
-            // TODO
-            if(false)
-                try {
-                    Process p = Runtime.getRuntime().exec(Main.localEXEPath);
-                    p.outputWriter().write("wac[list]\n");
-                    System.out.println(p.inputReader().readLine());
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
+            initScript();
 
         } else {
             JOptionPane.showMessageDialog(null, "The AudioController might no be installed/set up correctly\nDetected OS: " +
                     PSystem.getOSType() + "\nRunning Python-Script returns ERROR!", "Startup-Error", JOptionPane.ERROR_MESSAGE);
             System.exit(0);
+        }
+    }
+
+    private void initScript(){
+        try {
+            script = Runtime.getRuntime().exec(Main.localEXEPath);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 

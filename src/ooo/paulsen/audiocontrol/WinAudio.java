@@ -8,64 +8,120 @@ import java.util.*;
 
 public class WinAudio {
 
-    public static PCustomProtocol wac = new PCustomProtocol("wac", '[', ']', "^<<^", "^>>^");
-
+    // TEST
     static long t;
-    public static void main(String[] args) {
+
+    public static void testSpeed() throws InterruptedException {
 
         t = System.currentTimeMillis();
 
-        getAudioList();
-        //setAudio("firefox.exe", 1);
-        System.out.println("end: "+(System.currentTimeMillis() - t));
+        WinAudio a = WinAudio.getInstance();
+
+        int sample = 100;
+        for (float i = 0; i < sample; i++) {
+            a.setAudio("firefox.exe", i / sample);
+        }
+
+        System.out.println("end: " + (float) (System.currentTimeMillis() - t) / sample + "ms/command");
+
+        Thread.sleep(100);
+        List<String> l = a.getAudioList();
+        for(String s : l)
+            System.out.println(s);
+
+        a.close();
 
     }
 
-    public static List<String> getAudioList() {
+    public static void main(String[] args) throws InterruptedException {
+        testSpeed();
+    }
+    //////////////////
+
+    public static PCustomProtocol wac = new PCustomProtocol("wac", '[', ']', "^<<^", "^>>^");
+    private static WinAudio instance;
+
+    public static WinAudio getInstance() {
+        if (instance == null) {
+            try {
+                instance = new WinAudio(Main.localEXEPath);
+            } catch (FileNotFoundException e) {
+                return null;
+            } catch (IOException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+        return instance;
+    }
+
+    public void close() {
+        run("exit");
+        p.destroy();
+    }
+
+    public static synchronized List<String> getAudioList() {
         try {
-            return run(Main.localEXEPath, "list");
+            WinAudio wa = new WinAudio(Main.localEXEPath);
+            List<String> l = wa.runOut("list");
+            wa.close();
+            return l;
         } catch (IOException e) {
-            e.printStackTrace();
             return null;
         }
     }
 
-    public static boolean setAudio(String channelname, float value) {
+    public boolean setAudio(String channelname, float value) {
         String message = channelname + "|" + value;
+        if (p.isAlive())
+            return run(message);
+        return false;
+    }
+
+    private Process p;
+    private OutputStream out;
+    private BufferedReader br;
+
+    private WinAudio(String executable) throws IOException {
+        p = Runtime.getRuntime().exec(executable);
+        out = p.getOutputStream();
+        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+            public void run() {
+                WinAudio.getInstance().close();
+            }
+        }));
+    }
+
+    private boolean run(String message) {
         try {
-            run(Main.localEXEPath, message);
+            // when trying to list: simply exiting does list as well
+            out.write((wac.getProtocolOutput(message) + "\n").getBytes());
+            out.flush();
             return true;
+
         } catch (IOException e) {
-            e.printStackTrace();
+            // programm terminated
             return false;
         }
     }
 
-    private Process p;
+    private List<String> runOut(String message) {
+        br = new BufferedReader(new InputStreamReader(p.getInputStream()));
+        try {
+            // when trying to list: simply exiting does list as well
+            out.write((wac.getProtocolOutput(message) + "\n").getBytes());
+            out.write((wac.getProtocolOutput("exit") + "\n").getBytes());
+            out.flush();
 
-    public WinAudio(String executable) throws IOException {
-        p = Runtime.getRuntime().exec(executable);
-    }
+            ArrayList<String> l = new ArrayList<>();
+            br.lines().forEach(line -> l.add(line));
 
-    private static ArrayList<String> run(String command) throws IOException {
+            return l;
 
-        OutputStream out = p.getOutputStream();
-
-        // when trying to list: simply exiting does list as well
-        if (!command.contentEquals(wac.getProtocolOutput("list"))) {
-            out.write((wac.getProtocolOutput(command) + "\n").getBytes());
+        } catch (IOException e) {
+            // programm terminated
+            return null;
         }
-
-        out.flush();
-
-        return getOutput(p);
-    }
-
-    private static ArrayList<String> getOutput(Process p) {
-        ArrayList<String> lines = new ArrayList<>();
-        BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
-        br.lines().forEach(line -> System.out.println(line));
-        return lines;
     }
 
 }

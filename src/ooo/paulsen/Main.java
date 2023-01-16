@@ -9,9 +9,7 @@ import ooo.paulsen.utils.PInstance;
 import ooo.paulsen.utils.PSystem;
 
 import javax.swing.*;
-import java.awt.*;
 import java.io.*;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
@@ -26,7 +24,7 @@ import java.util.TimerTask;
 public class Main {
 
     // Change before Commit or Build
-    public static final String version = "b2.2.2b";
+    public static String version = "b2.2.2i";
     private static final boolean devMode = true;
 
     // Folder in Home-dir
@@ -64,11 +62,11 @@ public class Main {
 
         initVariables();
 
+        PFolder.createFolder(saveDir);
+
+        PFolder.createFolder(saveDir + PSystem.getFileSeparator() + "Logs");
+
         if (!devMode) {
-
-            PFolder.createFolder(saveDir);
-
-            PFolder.createFolder(saveDir + PSystem.getFileSeparator() + "Logs");
 
             // Set Console out
             try {
@@ -78,6 +76,8 @@ public class Main {
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
+        }else{
+            version += " - Devmode";
         }
 
         try {
@@ -321,16 +321,17 @@ public class Main {
      * @param filepath
      * @return true: if download successful - false: if some error occured
      */
-    public static boolean downloadFile(String url, String filepath){
+    public static boolean downloadFile(String url, String filepath) {
         System.out.println(filepath);
         try {
             URL website = new URL(url);
             InputStream in = website.openStream();
             File f = new File(filepath);
-            if(f.exists())
-                PFile.deleteFile(filepath);
             Files.copy(in, new File(filepath).toPath(), StandardCopyOption.REPLACE_EXISTING);
             return true;
+        } catch (FileNotFoundException e) {
+            System.err.println("Could not download file");
+            return false;
         } catch (IOException | SecurityException e) {
             e.printStackTrace();
             return false;

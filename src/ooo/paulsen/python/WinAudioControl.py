@@ -11,7 +11,6 @@ def mainLoop():
         message = getProtocolMessage(sys.stdin.readline().strip())
 
         if message.__eq__("exit"):
-            outputAudioInfo()
             sys.exit(0)
 
         elif message.__eq__("list"):
