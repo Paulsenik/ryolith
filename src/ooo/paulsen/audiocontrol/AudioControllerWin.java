@@ -5,8 +5,12 @@ import ooo.paulsen.utils.PSystem;
 
 import javax.swing.*;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Scanner;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class AudioControllerWin extends AudioController {
 
