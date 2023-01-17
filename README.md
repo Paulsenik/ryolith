@@ -1,6 +1,8 @@
 # AudioController ![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/realPaulsen/audiocontroller?include_prereleases) ![GitHub](https://img.shields.io/github/license/realPaulsen/AudioController) ![GitHub top language](https://img.shields.io/github/languages/top/realPaulsen/AudioController)
 
 Controls audio of different processes (Can connect to Serial/Arduino)
+> *[Version 2](https://github.com/realPaulsen/AudioController/tree/v2_in_development) in Development **(v2_in_development**-branch)*
+> - adds **LinuxSupport**, better **UI** & overall **Optimizations**
 
 Create groups, add different programs to each group and add the groups to your new controls. Now you can control the
 volume of different programs individually
