@@ -3,6 +3,9 @@
 bin/
 out/
 
+src/ooo/paulsen/python/build
+*.spec
+
 # Log file
 *.log
 
@@ -33,5 +36,9 @@ out/
 *.iml
 .idea
 
+# DataStorage
+*.cfg
+
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
+/.idea/
