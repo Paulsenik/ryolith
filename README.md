@@ -1,8 +1,8 @@
 
 # AudioController ![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/realPaulsen/audiocontroller?include_prereleases) ![Beta](https://img.shields.io/badge/Status-Beta-yellow) ![GitHub](https://img.shields.io/github/license/realPaulsen/AudioController) ![GitHub top language](https://img.shields.io/github/languages/top/realPaulsen/AudioController)
 
-- Beta In Development: ![GitHub last commit (branch)](https://img.shields.io/github/last-commit/realPaulsen/audiocontroller/v2_in_development)
-- Releasebranch: ![GitHub last commit (branch)](https://img.shields.io/github/last-commit/realPaulsen/audiocontroller/Release)
+- Beta In Development: ![GitHub last commit (branch)](https://img.shields.io/github/last-commit/realPaulsen/audiocontroller/development)
+- Releasebranch: ![GitHub last commit (branch)](https://img.shields.io/github/last-commit/realPaulsen/audiocontroller/release)
 
 Controls audio of different processes (Can connect to Serial/Arduino)
 
