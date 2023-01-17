@@ -1,48 +1,63 @@
-
-# AudioController ![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/realPaulsen/audiocontroller?include_prereleases) ![Beta](https://img.shields.io/badge/Status-Beta-yellow) ![GitHub](https://img.shields.io/github/license/realPaulsen/AudioController) ![GitHub top language](https://img.shields.io/github/languages/top/realPaulsen/AudioController)
-
-- Beta In Development: ![GitHub last commit (branch)](https://img.shields.io/github/last-commit/realPaulsen/audiocontroller/development)
-- Releasebranch: ![GitHub last commit (branch)](https://img.shields.io/github/last-commit/realPaulsen/audiocontroller/release)
+# AudioController ![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/realPaulsen/audiocontroller?include_prereleases) ![GitHub](https://img.shields.io/github/license/realPaulsen/AudioController) ![GitHub top language](https://img.shields.io/github/languages/top/realPaulsen/AudioController)
 
 Controls audio of different processes (Can connect to Serial/Arduino)
 
-___
+Create groups, add different programs to each group and add the groups to your new controls. Now you can control the
+volume of different programs individually
 
-Reimplementation of the original v1-AudioController with similar UI, but new Linux-Support and a more stable **UI-** and **USB-Serial-Library** 
+<img src="img/Screenshot0.png" width="50%" alt="Mainmenu" >
 
-> *Tip: **Connect an Arduino** to it, so you don't have to tab out of your **Game/Application** to change the volume.*
+<img src="img/Screenshot1.png" width="50%" alt="Group-Settings">
 
-## Usage:
+> *Tip: **Connect an Arduino** to it, by clicking next to "Port:", so you don't have to tab out of your **Game/Application** to change the volume.*
 
-If you want to edit the configs manually (at your own risk), you can find them **inside a Folder** in your **Home-Directory** at `%HOME%/.jaudiocontroller`
+## Linux
 
-### Linux
+Just download the latest `.jar` and execute.
 
-1. Before **using USB-Control** you might need to **add your User** to some of those **4 groups**<br>
+For **using USB-Control**:
+
+1. You might need to **add your User** to some of those **4 groups**<br>
    Don't worry if some of the commands fail. All of these groups may not exist on every Linux distro.
     ```shell
     sudo usermod -a -G uucp,dialout,tty <your_username>
     ```
-    If you are **using SUSE 11.3 or higher**, replace the **'-a -G'** flags with a single **'-A'** flag.
-
 
 2. **Log out** and you should have **access** to the serial port **after logging back in**
 
-*If Problems still occur check the [**Troubleshooting-Wiki**](https://github.com/Fazecast/jSerialComm/wiki/Troubleshooting) of the [USB-Library](https://github.com/Fazecast/jSerialComm)*
+*If Problems still occur check
+the [**Troubleshooting-Wiki**](https://github.com/Fazecast/jSerialComm/wiki/Troubleshooting) of
+the [USB-Library](https://github.com/Fazecast/jSerialComm)*
 
-### Windows
+## Windows
 
-Just download the latest `.jar` and run it.<br>
+Just download the latest `.jar` and execute.<br>
 It should automatically download/update any files needed.
+
+## Usage of Arduino/RaspberryPi
+
+You can program your Microcontroller to `Serial.print()` control-commands to the Java-Programm.
+
+- Each command starts with `ac[` and ends with `]`.
+- The message between should consist of the `Control-Name` a seperator `|` and a volume-`value` between **0-1000**
+
+For Example: `ac[slider1|500]` sets the control `slider1` in the Java-program to `50%`.
+<br>
+You can also look into my [Arduino](AudioController_Arduino/AudioController_Arduino.ino)-example I use every day.
+
+## Config
+
+If you want to edit the configs manually: At your own risk! You can find the files at your **Home-Directory**
+in `%HOME%/.jaudiocontroller`
 
 ## Build-Note
 
-* Import latest build of [Java-Project-Library](https://github.com/realPaulsen/Java-Project-Library) into Project before building
+* Import my [Java-Project-Library](https://github.com/realPaulsen/Java-Project-Library) **v1.1.5 or higher** into
+  Project before building
 * Build python-binary with:
-  > pyinstaller --onefile .\Python\WinAudioControl.py
+  > pyinstaller --onefile .\WinAudioControl.py
 
-
-## TODOs
+## TODO
 
 * add Min- & Max-Values for Processes
 * Serial-Protocol for directly controlling a processes' Volume

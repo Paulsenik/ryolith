@@ -2,7 +2,6 @@ package ooo.paulsen;
 
 import ooo.paulsen.audiocontrol.AudioManager;
 import ooo.paulsen.io.PDataStorage;
-import ooo.paulsen.io.PFile;
 import ooo.paulsen.io.PFolder;
 import ooo.paulsen.ui.UI;
 import ooo.paulsen.utils.PInstance;
@@ -24,7 +23,7 @@ import java.util.TimerTask;
 public class Main {
 
     // Change before Commit or Build
-    public static String version = "b2.3.0";
+    public static String version = "v2.0.0";
     private static final boolean devMode = false;
 
     // Folder in Home-dir

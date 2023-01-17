@@ -491,7 +491,7 @@ public class UI {
                 g.setColor(PUIElement.getDefaultColor(20));
                 g.fillRect(0, bHeight + space / 2, w + 10, 2);
 
-                g.setColor(PUIElement.getDefaultColor(6));
+                g.setColor(PUIElement.getDefaultColor(1));
                 g.setFont(new Font("Arial", Font.PLAIN, space));
                 g.drawString(Main.version, 0, h);
 
@@ -727,7 +727,7 @@ public class UI {
                     if (!b) {
                         g.setColor(new Color(0,0,0,100));
                         g.fillRoundRect(x, y, w, h, 15, 15);
-                        System.out.println(((PUIText) e).getText() + " läuft nicht"); // TODO REMOVE
+                        System.err.println(((PUIText) e).getText() + " läuft nicht"); // TODO REMOVE
                     }
                 }
 
