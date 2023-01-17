@@ -24,8 +24,8 @@ import java.util.TimerTask;
 public class Main {
 
     // Change before Commit or Build
-    public static String version = "b2.2.2i";
-    private static final boolean devMode = true;
+    public static String version = "b2.3.0";
+    private static final boolean devMode = false;
 
     // Folder in Home-dir
     public static final String saveDir = System.getProperty("user.home") + PSystem.getFileSeparator() + ".jaudiocontroller";
