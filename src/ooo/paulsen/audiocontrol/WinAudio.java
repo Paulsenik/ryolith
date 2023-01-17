@@ -15,21 +15,21 @@ public class WinAudio {
 
         t = System.currentTimeMillis();
 
-        WinAudio a = WinAudio.getInstance();
-
         int sample = 100;
         for (float i = 0; i < sample; i++) {
-            a.setAudio("firefox.exe", i / sample);
+            WinAudio.setAudio("firefox.exe", i / sample);
         }
 
         System.out.println("end: " + (float) (System.currentTimeMillis() - t) / sample + "ms/command");
 
-        Thread.sleep(100);
-        List<String> l = a.getAudioList();
-        for(String s : l)
+        Thread.sleep(1000);
+        List<String> l = WinAudio.getAudioList();
+        for (String s : l)
             System.out.println(s);
 
-        a.close();
+
+        WinAudio.getInstance().close();
+
 
     }
 
@@ -55,9 +55,14 @@ public class WinAudio {
         return instance;
     }
 
+    public boolean isAlive() {
+        return p.isAlive();
+    }
+
     public void close() {
         run("exit");
         p.destroy();
+        System.out.println("CLOSE");
     }
 
     public static synchronized List<String> getAudioList() {
@@ -71,11 +76,9 @@ public class WinAudio {
         }
     }
 
-    public boolean setAudio(String channelname, float value) {
+    public static boolean setAudio(String channelname, float value) {
         String message = channelname + "|" + value;
-        if (p.isAlive())
-            return run(message);
-        return false;
+        return getInstance().run(message);
     }
 
     private Process p;
@@ -96,11 +99,14 @@ public class WinAudio {
         try {
             // when trying to list: simply exiting does list as well
             out.write((wac.getProtocolOutput(message) + "\n").getBytes());
-            out.flush();
+            if (p.isAlive())
+                out.flush();
+
             return true;
 
         } catch (IOException e) {
             // programm terminated
+            e.printStackTrace();
             return false;
         }
     }

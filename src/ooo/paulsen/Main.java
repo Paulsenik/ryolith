@@ -308,7 +308,8 @@ public class Main {
             System.out.println("Successfully updated WindowsAudioControl.exe from backup-link");
             return true;
         }else if(new File(localEXEPath).exists()) { // file exists but is not the newest
-            JOptionPane.showMessageDialog(null, "Could not download mandatory dependency for your OS", "Startup-Warning", JOptionPane.INFORMATION_MESSAGE);
+            // JOptionPane.showMessageDialog(null, "Could not update dependencys for your OS", "Startup-Warning", JOptionPane.INFORMATION_MESSAGE);
+            System.err.println("[Main] :: Could not update dependencys for your OS!");
             return true;
         }
         // exit if an error occurred and no local dependencys exist
