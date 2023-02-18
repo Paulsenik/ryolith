@@ -5,9 +5,9 @@ Controls audio of different processes (Can connect to Serial/Arduino)
 Create groups, add different programs to each group and add the groups to your new controls. Now you can control the
 volume of different programs individually
 
-<img src="img/Screenshot0.png" width="50%" alt="Mainmenu" >
+<img src="img/Screenshot0.png" width="90%" alt="Mainmenu" >
 
-<img src="img/Screenshot1.png" width="50%" alt="Group-Settings">
+<img src="img/Screenshot1.png" width="90%" alt="Group-Settings">
 
 > *Tip: **Connect an Arduino** to it, by clicking next to "Port:", so you don't have to tab out of your **Game/Application** to change the volume.*
 
