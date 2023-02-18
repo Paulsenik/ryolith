@@ -65,7 +65,7 @@ public class UI {
     TrayIcon trayIcon;
 
     // Top-Bar
-    private PUIElement minimizeUI, settingsUI; // bottomButtons
+    private PUIElement settingsUI; // bottomButtons
     private PUIText serialButton;
     private PUICanvas c; // gets used in
 
@@ -157,6 +157,7 @@ public class UI {
 
         PUIElement.setDefaultColor(10, new Color(44, 183, 14, 255));
         PUIElement.setDefaultColor(11, new Color(222, 40, 40, 255));
+        PUIElement.setDefaultColor(12, new Color(222, 149, 40, 255));
 
         PUIElement.setDefaultColor(20, new Color(0, 0, 0, 20));
         PUIElement.setDefaultColor(21, new Color(255, 255, 255, 5));
@@ -274,22 +275,6 @@ public class UI {
     public void initElements() {
 
         // Buttons
-        minimizeUI = new PUIElement(f);
-        minimizeUI.addActionListener(new PUIAction() {
-            @Override
-            public void run(PUIElement arg0) {
-                toggleMinimized();
-            }
-        });
-        minimizeUI.setDraw(new PUIPaintable() {
-            @Override
-            public void paint(Graphics2D g, int x, int y, int w, int h) {
-                int space = Math.min(w, h) / 6;
-
-                g.setColor(minimizeUI.getTextColor());
-                g.fillRoundRect(x + space, y + h - space * 2, w - space * 2, space, 10, 10);
-            }
-        });
 
         settingsUI = new PUIElement(f);
         settingsUI.addActionListener(new PUIAction() {
@@ -313,6 +298,7 @@ public class UI {
         });
 
         serialButton = new PUIText(f, "-");
+        serialButton.setBackgroundColor(serialButton.getDefaultColor(4));
         serialButton.addActionListener(new PUIAction() {
             @Override
             public void run(PUIElement that) {
@@ -491,7 +477,7 @@ public class UI {
                 g.setColor(PUIElement.getDefaultColor(20));
                 g.fillRect(0, bHeight + space / 2, w + 10, 2);
 
-                g.setColor(PUIElement.getDefaultColor(6));
+                g.setColor(PUIElement.getDefaultColor(1));
                 g.setFont(new Font("Arial", Font.PLAIN, space));
                 g.drawString(Main.version, 0, h);
 
@@ -501,12 +487,12 @@ public class UI {
                 int textY = bHeight / 2 - space / 4;
                 // // USB
                 g.setColor(Main.am.isSerialConnected() ? PUIElement.getDefaultColor(10) : PUIElement.getDefaultColor(11));
-                g.fillOval(bHeight + space / 2, space / 2, bHeight / 2 - space, bHeight / 2 - space);
-                g.drawString("USB", bHeight + bHeight / 2, textY);
+                g.fillOval(space / 2, space / 2, bHeight / 2 - space, bHeight / 2 - space);
+                g.drawString("USB", bHeight / 2, textY);
                 // // Audio
                 g.setColor(Main.am.isAudioConnected() ? PUIElement.getDefaultColor(10) : PUIElement.getDefaultColor(11));
-                g.fillOval(bHeight + space / 2, space / 2 + bHeight / 2, bHeight / 2 - space, bHeight / 2 - space);
-                g.drawString("Audio", bHeight + bHeight / 2, bHeight / 2 + textY);
+                g.fillOval(space / 2, space / 2 + bHeight / 2, bHeight / 2 - space, bHeight / 2 - space);
+                g.drawString("Audio", bHeight / 2, bHeight / 2 + textY);
 
 
                 g.setFont(new Font("Arial", Font.PLAIN, textHeight));
@@ -550,7 +536,7 @@ public class UI {
                 if (!isSettings) {
 
                     // AudioControl
-                    audioControlUI.setShowedElements(w / 400 + 1);
+                    audioControlUI.setShowedElements(5);
                     audioControlUI.setBounds(space, bHeight + space + textHeight, w - space * 2, h - space * 2 - bHeight - textHeight);
                     audioControlUI.setSliderWidth(h / 20);
                     audioControlUI.updateElements();
@@ -591,7 +577,6 @@ public class UI {
                     addAudioControlB.setEnabled(false);
                 }
 
-                minimizeUI.setBounds(0, 0, bHeight, bHeight);
                 settingsUI.setBounds(w - bHeight, 0, bHeight, bHeight);
                 serialButton.setBounds((int) (w / 2 + textHeight * 2.8f), space, (int) (w / 2 - textHeight * 2.8f - bHeight - space), bHeight - space);
             }
@@ -626,7 +611,7 @@ public class UI {
                 @Override
                 public void draw(Graphics2D g) {
                     if (!((boolean) getMetadata())) {
-                        setBackgroundColor(getDefaultColor(11));
+                        setBackgroundColor(getDefaultColor(12));
                     } else {
                         setBackgroundColor(getDefaultColor(10));
                     }
@@ -676,8 +661,7 @@ public class UI {
 
         for (Group g : Group.groups) {
             for (String p : g.getProcesses()) {
-                if (!activeProcessSet.contains(p))
-                    processSet.addAll(g.getProcesses());
+                processSet.addAll(g.getProcesses());
             }
         }
 
@@ -686,12 +670,14 @@ public class UI {
         // active processes
         for (String process : activeProcessSet) {
             elems.add(getProcessElement(process, true));
-            System.out.println("cached: " + process); // TODO REMOVE
+            //System.out.println("cached: " + process);
         }
 
         for (String process : processSet) {
-            elems.add(getProcessElement(process, false));
-            System.out.println("saved: " + process); // TODO REMOVE
+            if (!activeProcessSet.contains(process)) {
+                elems.add(getProcessElement(process, false));
+                //System.out.println("saved: " + process);
+            }
         }
 
         // refresh List
@@ -711,24 +697,29 @@ public class UI {
                 if (!e.isEnabled())
                     return;
 
+                Object o = e.getMetadata();
+                boolean isActive = false;
+                if (o != null && o instanceof Boolean) {
+                    isActive = (boolean) o;
+                }
+
+
                 Group group = Group.getGroup(selectedGroup);
 
                 if (group != null && group.getProcesses().contains(((PUIText) e).getText())) {
                     g.setColor(PUIElement.getDefaultColor(10));
                 } else {
-                    g.setColor(PUIElement.getDefaultColor(11));
+                    if(Main.getSavedProcesses().contains(processName))
+                        g.setColor(PUIElement.getDefaultColor(12));
+                    else
+                        g.setColor(PUIElement.getDefaultColor(11));
                 }
 
                 g.fillRoundRect(x, y, w, h, 15, 15);
 
-                Object o = e.getMetadata();
-                if (o != null && o instanceof Boolean) {
-                    boolean b = (boolean) o;
-                    if (!b) {
-                        g.setColor(new Color(0,0,0,100));
-                        g.fillRoundRect(x, y, w, h, 15, 15);
-                        System.out.println(((PUIText) e).getText() + " läuft nicht"); // TODO REMOVE
-                    }
+                if (!isActive) {
+                    g.setColor(new Color(0, 0, 0, 100));
+                    g.fillRoundRect(x, y, w, h, 15, 15);
                 }
 
             }

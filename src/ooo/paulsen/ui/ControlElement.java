@@ -67,6 +67,7 @@ public class ControlElement extends PUIElement {
         });
         rotaryControl.doPaintOverOnHover(false);
         rotaryControl.doPaintOverOnPress(false);
+        rotaryControl.setBackgroundColor(getDefaultColor(4));
         rotaryControl.setValue_NoUpdate(0f);
 
         groups = new PUIList(getFrame(), getInteractionLayer() + 1);
@@ -74,6 +75,7 @@ public class ControlElement extends PUIElement {
         groups.doPaintOverOnHover(false);
         groups.doPaintOverOnPress(false);
         groups.setBackgroundColor(new Color(0,0,0,0));
+        groups.showSlider(false);
 
         addGroup = new PUIElement(getFrame(), getInteractionLayer() + 1) {
             @Override
@@ -197,10 +199,10 @@ public class ControlElement extends PUIElement {
             return;
 
         g.setColor(PUIElement.getDefaultColor(21));
-        g.fillRoundRect(x+1,y,w-2,topSize,15,15);
+        g.fillRoundRect(x+1,y,w-2,topSize,arcWidth,arcHeight);
 
         Shape c = g.getClip();
-        g.setClip(x, y, w, h);
+        g.setClip(x, y, w-removeControl.w, h);
 
         g.setColor(PUIElement.getDefaultColor(1));
         g.setFont(new Font("Arial", Font.PLAIN, topSize));
@@ -218,21 +220,23 @@ public class ControlElement extends PUIElement {
         groups.draw(g);
 
         g.setColor(PUIElement.getDefaultColor(3));
-        g.drawRoundRect(x-1,y-1,w+2,h+2,15,15);
+        g.drawRoundRect(x,y,w,h,arcWidth,arcHeight);
     }
 
     @Override
     public synchronized void setBounds(int x, int y, int w, int h) {
         super.setBounds(x, y, w, h);
 
-        topSize = h / 6;
-        int bSize = h / 10;
+        topSize = h / 9;
+        int bSize = h / 12;
 
-        int min = Math.min(w, h / 3 * 2 - topSize);
+        int contentArea = h / 3 * 2 - topSize;
+
+        int min = Math.min(w, contentArea-topSize*2);
 
         removeControl.setBounds(x + w - topSize, y, topSize, topSize);
 
-        rotaryControl.setBounds(x + (w - (min - bSize)) / 2, y + topSize + bSize / 2, min - bSize);
+        rotaryControl.setBounds(x + (w-min) / 2, y + topSize + (contentArea-min)/2 , min);
 
         addGroup.setBounds(x + w - bSize, y + h / 3 * 2 - bSize, bSize, bSize);
 

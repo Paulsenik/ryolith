@@ -13,9 +13,8 @@ import java.io.*;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * @author Paul
@@ -24,14 +23,14 @@ import java.util.TimerTask;
 public class Main {
 
     // Change before Commit or Build
-    public static String version = "b2.3.0";
+    public static String version = "v2.0.1";
     private static final boolean devMode = false;
 
     // Folder in Home-dir
     public static final String saveDir = System.getProperty("user.home") + PSystem.getFileSeparator() + ".jaudiocontroller";
     public static final String localEXEPath = saveDir + PSystem.getFileSeparator() + "WinAudioControl.exe";
-    public static final String webEXEPath_1 = "https://raw.githubusercontent.com/realPaulsen/AudioController/Release/src/ooo/paulsen/python/dist/WinAudioControl.exe";
-    public static final String webEXEPath_2 = "https://raw.githubusercontent.com/realPaulsen/AudioController/v2_in_development/src/ooo/paulsen/python/dist/WinAudioControl.exe"; // Backup-link
+    public static final String webEXEPath_1 = "https://raw.githubusercontent.com/realPaulsen/AudioController/release/src/ooo/paulsen/python/dist/WinAudioControl.exe";
+    public static final String webEXEPath_2 = "https://raw.githubusercontent.com/realPaulsen/AudioController/development/src/ooo/paulsen/python/dist/WinAudioControl.exe"; // Backup-link
     public static final int PORT = 6434;
     public static UI ui;
     public static AudioManager am;
@@ -97,6 +96,10 @@ public class Main {
             ui.updateCurrentSerialConnection();
         }
 
+        // Update processes
+        Main.am.refreshProcesses();
+        Main.ui.updateProcessList();
+
         // AutoSave every 10 minutes
         new Timer().scheduleAtFixedRate(new TimerTask() {
             @Override
@@ -121,6 +124,16 @@ public class Main {
                 c.setVolume(volume);
                 ui.f.repaint();
             }
+    }
+
+    public static Set<String> getSavedProcesses(){
+        HashSet<String> list = new HashSet<>();
+        for (Control c : Control.getControls()){
+            for(Group g : c.getGroups()){
+                list.addAll(g.getProcesses());
+            }
+        }
+        return list;
     }
 
     /**
