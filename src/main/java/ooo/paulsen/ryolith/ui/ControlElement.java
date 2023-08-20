@@ -1,10 +1,14 @@
-package ooo.paulsen.ui;
+package ooo.paulsen.ryolith.ui;
 
-import ooo.paulsen.Control;
-import ooo.paulsen.Group;
-import ooo.paulsen.Main;
-import ooo.paulsen.ui.core.PUIAction;
-import ooo.paulsen.ui.core.PUIFrame;
+import ooo.paulsen.ryolith.Control;
+import ooo.paulsen.ryolith.Group;
+import ooo.paulsen.ryolith.Main;
+import ooo.paulsen.jpl.ui.PUIElement;
+import ooo.paulsen.jpl.ui.PUIList;
+import ooo.paulsen.jpl.ui.PUIRotaryControl;
+import ooo.paulsen.jpl.ui.PUIText;
+import ooo.paulsen.jpl.ui.core.PUIAction;
+import ooo.paulsen.jpl.ui.core.PUIFrame;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -202,7 +206,7 @@ public class ControlElement extends PUIElement {
         g.fillRoundRect(x+1,y,w-2,topSize,arcWidth,arcHeight);
 
         Shape c = g.getClip();
-        g.setClip(x, y, w-removeControl.w, h);
+        g.setClip(x, y, w- removeControl.getW(), h);
 
         g.setColor(PUIElement.getDefaultColor(1));
         g.setFont(new Font("Arial", Font.PLAIN, topSize));

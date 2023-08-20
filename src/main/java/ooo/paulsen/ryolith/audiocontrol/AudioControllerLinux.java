@@ -1,8 +1,8 @@
-package ooo.paulsen.audiocontrol;
+package ooo.paulsen.ryolith.audiocontrol;
 
-import ooo.paulsen.Main;
-import ooo.paulsen.utils.PConsole;
-import ooo.paulsen.utils.PSystem;
+import ooo.paulsen.ryolith.Main;
+import ooo.paulsen.jpl.utils.PConsole;
+import ooo.paulsen.jpl.utils.PSystem;
 
 import javax.swing.*;
 import java.awt.*;

@@ -1,15 +1,13 @@
-package ooo.paulsen.audiocontrol;
+package ooo.paulsen.ryolith.audiocontrol;
 
-import com.fazecast.jSerialComm.SerialPortInvalidPortException;
-import ooo.paulsen.Control;
-import ooo.paulsen.Main;
-import ooo.paulsen.io.PCustomProtocol;
-import ooo.paulsen.io.serial.PSerialConnection;
-import ooo.paulsen.io.serial.PSerialListener;
-import ooo.paulsen.utils.PSystem;
+import ooo.paulsen.ryolith.Control;
+import ooo.paulsen.ryolith.Main;
+import ooo.paulsen.jpl.io.PCustomProtocol;
+import ooo.paulsen.jpl.io.serial.PSerialConnection;
+import ooo.paulsen.jpl.io.serial.PSerialListener;
+import ooo.paulsen.jpl.utils.PSystem;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 public class AudioManager {
 
@@ -99,6 +97,14 @@ public class AudioManager {
         };
     }
 
+    /**
+     * Event-Function is called when
+     */
+    private void disconnected(){
+        Main.ui.updateCurrentSerialConnection();
+        System.out.println("[AudioManager] :: disconnected");
+    }
+
     public boolean connectToSerial(String port) {
         try {
             if (serial != null)
@@ -108,13 +114,12 @@ public class AudioManager {
             serial.setDisconnectEvent(new Runnable() {
                 @Override
                 public void run() {
-                    Main.ui.updateCurrentSerialConnection();
-                    System.out.println("[AudioManager] :: disconnected");
+                    disconnected();
                 }
             });
             serial.addListener(listener);
             return serial.connect();
-        } catch (SerialPortInvalidPortException e) {
+        } catch (RuntimeException e) {
             return false;
         }
     }

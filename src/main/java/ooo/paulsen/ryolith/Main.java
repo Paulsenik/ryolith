@@ -1,19 +1,19 @@
-package ooo.paulsen;
+package ooo.paulsen.ryolith;
 
-import ooo.paulsen.audiocontrol.AudioManager;
-import ooo.paulsen.io.PDataStorage;
-import ooo.paulsen.io.PFolder;
-import ooo.paulsen.ui.UI;
-import ooo.paulsen.utils.PInstance;
-import ooo.paulsen.utils.PSystem;
+import ooo.paulsen.ryolith.audiocontrol.AudioManager;
+import ooo.paulsen.jpl.io.PDataStorage;
+import ooo.paulsen.jpl.io.PFolder;
+import ooo.paulsen.jpl.utils.PInstance;
+import ooo.paulsen.jpl.utils.PSystem;
+import ooo.paulsen.ryolith.ui.UI;
 
 import javax.swing.*;
 import java.io.*;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
-import java.util.*;
 import java.util.Timer;
+import java.util.*;
 
 /**
  * @author Paul
