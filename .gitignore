@@ -35,6 +35,7 @@ src/ooo/paulsen/python/build
 *.project
 *.iml
 .idea
+target
 
 # DataStorage
 *.cfg

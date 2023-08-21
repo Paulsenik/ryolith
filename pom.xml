@@ -16,7 +16,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.github.realPaulsen</groupId>
+            <groupId>com.github.paulsenik</groupId>
             <artifactId>java-project-library</artifactId>
             <version>1.1.6</version>
         </dependency>

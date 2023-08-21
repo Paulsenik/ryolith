@@ -26,10 +26,10 @@ public class Main {
     private static final boolean devMode = false;
 
     // Folder in Home-dir
-    public static final String saveDir = System.getProperty("user.home") + PSystem.getFileSeparator() + ".jaudiocontroller";
+    public static final String saveDir = System.getProperty("user.home") + PSystem.getFileSeparator() + ".ryolith";
     public static final String localEXEPath = saveDir + PSystem.getFileSeparator() + "WinAudioControl.exe";
-    public static final String webEXEPath_1 = "https://raw.githubusercontent.com/realPaulsen/AudioController/release/src/ooo/paulsen/python/dist/WinAudioControl.exe";
-    public static final String webEXEPath_2 = "https://raw.githubusercontent.com/realPaulsen/AudioController/development/src/ooo/paulsen/python/dist/WinAudioControl.exe"; // Backup-link
+    public static final String webEXEPath_1 = "https://raw.githubusercontent.com/paulsenik/ryolith/release/src/ooo/paulsen/python/dist/WinAudioControl.exe";
+    public static final String webEXEPath_2 = "https://raw.githubusercontent.com/paulsenik/ryolith/development/src/ooo/paulsen/python/dist/WinAudioControl.exe"; // Backup-link
     public static final int PORT = 6434;
     public static UI ui;
     public static AudioManager am;

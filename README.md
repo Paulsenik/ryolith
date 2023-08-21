@@ -1,15 +1,22 @@
-# AudioController ![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/realPaulsen/audiocontroller?include_prereleases) ![GitHub](https://img.shields.io/github/license/realPaulsen/AudioController) ![GitHub top language](https://img.shields.io/github/languages/top/realPaulsen/AudioController)
+# Ryolith ![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/paulsenik/ryolith?include_prereleases) ![GitHub](https://img.shields.io/github/license/paulsenik/ryolith) ![GitHub top language](https://img.shields.io/github/languages/top/paulsenik/ryolith)
 
-Controls audio of different processes (Can connect to Serial/Arduino)
+- **Ryolith is an Audiocontroller written in Java** that controls the volume of processes individually.
 
-Create groups, add different programs to each group and add the groups to your new controls. Now you can control the
-volume of different programs individually
+- **Create groups**, add different **programs to each group** and add the groups to your new **controls**.
+
+- **The Arduino** or any other programmable USB-Device can connect to the program to **control** it.
+
 
 <img src="img/Screenshot0.png" width="90%" alt="Mainmenu" >
 
 <img src="img/Screenshot1.png" width="90%" alt="Group-Settings">
 
 > *Tip: **Connect an Arduino** to it, by clicking next to "Port:", so you don't have to tab out of your **Game/Application** to change the volume.*
+
+## Windows
+
+Just download the latest `.jar` and execute.<br>
+It should automatically download/update any files needed.
 
 ## Linux
 
@@ -29,10 +36,6 @@ For **using USB-Control**:
 the [**Troubleshooting-Wiki**](https://github.com/Fazecast/jSerialComm/wiki/Troubleshooting) of
 the [USB-Library](https://github.com/Fazecast/jSerialComm)*
 
-## Windows
-
-Just download the latest `.jar` and execute.<br>
-It should automatically download/update any files needed.
 
 ## Usage of Arduino/RaspberryPi
 
@@ -43,16 +46,16 @@ You can program your Microcontroller to `Serial.print()` control-commands to the
 
 For Example: `ac[slider1|500]` sets the control `slider1` in the Java-program to `50%`.
 <br>
-You can also look into my [Arduino](AudioController_Arduino/AudioController_Arduino.ino)-example I use every day.
+You can also look into my [Arduino](Arduino/ryolith.ino)-example I use every day.
 
 ## Config
 
 If you want to edit the configs manually: At your own risk! You can find the files at your **Home-Directory**
-in `%HOME%/.jaudiocontroller`
+in `%HOME%/.ryolith`
 
 ## Build-Note
 
-* Import my [Java-Project-Library](https://github.com/realPaulsen/Java-Project-Library) **v1.1.5 or higher** into
+* Import my [Java-Project-Library](https://github.com/paulsenik/java-project-library) **v1.1.5 or higher** into
   Project before building
 * Build python-binary with:
   > pyinstaller --onefile .\WinAudioControl.py
