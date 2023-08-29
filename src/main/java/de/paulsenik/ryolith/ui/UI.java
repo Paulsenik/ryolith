@@ -1,8 +1,8 @@
-package ooo.paulsen.ryolith.ui;
+package de.paulsenik.ryolith.ui;
 
-import ooo.paulsen.ryolith.Control;
-import ooo.paulsen.ryolith.Group;
-import ooo.paulsen.ryolith.Main;
+import de.paulsenik.ryolith.Control;
+import de.paulsenik.ryolith.Group;
+import de.paulsenik.ryolith.Main;
 import ooo.paulsen.jpl.io.serial.PSerialConnection;
 import ooo.paulsen.jpl.ui.PUIElement;
 import ooo.paulsen.jpl.ui.PUIList;

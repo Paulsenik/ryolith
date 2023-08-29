@@ -1,7 +1,7 @@
-package ooo.paulsen.ryolith.audiocontrol;
+package de.paulsenik.ryolith.audiocontrol;
 
-import ooo.paulsen.ryolith.Control;
-import ooo.paulsen.ryolith.Main;
+import de.paulsenik.ryolith.Control;
+import de.paulsenik.ryolith.Main;
 import ooo.paulsen.jpl.io.PCustomProtocol;
 import ooo.paulsen.jpl.io.serial.PSerialConnection;
 import ooo.paulsen.jpl.io.serial.PSerialListener;

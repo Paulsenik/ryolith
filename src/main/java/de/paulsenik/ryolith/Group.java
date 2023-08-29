@@ -1,4 +1,4 @@
-package ooo.paulsen.ryolith;
+package de.paulsenik.ryolith;
 
 import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArrayList;

@@ -1,11 +1,11 @@
-package ooo.paulsen.ryolith;
+package de.paulsenik.ryolith;
 
-import ooo.paulsen.ryolith.audiocontrol.AudioManager;
+import de.paulsenik.ryolith.audiocontrol.AudioManager;
 import ooo.paulsen.jpl.io.PDataStorage;
 import ooo.paulsen.jpl.io.PFolder;
 import ooo.paulsen.jpl.utils.PInstance;
 import ooo.paulsen.jpl.utils.PSystem;
-import ooo.paulsen.ryolith.ui.UI;
+import de.paulsenik.ryolith.ui.UI;
 
 import javax.swing.*;
 import java.io.*;
@@ -28,8 +28,8 @@ public class Main {
     // Folder in Home-dir
     public static final String saveDir = System.getProperty("user.home") + PSystem.getFileSeparator() + ".ryolith";
     public static final String localEXEPath = saveDir + PSystem.getFileSeparator() + "WinAudioControl.exe";
-    public static final String webEXEPath_1 = "https://raw.githubusercontent.com/paulsenik/ryolith/release/src/ooo/paulsen/python/dist/WinAudioControl.exe";
-    public static final String webEXEPath_2 = "https://raw.githubusercontent.com/paulsenik/ryolith/development/src/ooo/paulsen/python/dist/WinAudioControl.exe"; // Backup-link
+    public static final String webEXEPath_1 = "https://raw.githubusercontent.com/paulsenik/ryolith/release/src/de/paulsenik/python/dist/WinAudioControl.exe";
+    public static final String webEXEPath_2 = "https://raw.githubusercontent.com/paulsenik/ryolith/development/src/de/paulsenik/python/dist/WinAudioControl.exe"; // Backup-link
     public static final int PORT = 6434;
     public static UI ui;
     public static AudioManager am;

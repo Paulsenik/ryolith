@@ -1,8 +1,8 @@
-package ooo.paulsen.ryolith.audiocontrol;
+package de.paulsenik.ryolith.audiocontrol;
 
+import de.paulsenik.ryolith.Main;
 import ooo.paulsen.jpl.io.PCustomProtocol;
 import ooo.paulsen.jpl.utils.PSystem;
-import ooo.paulsen.ryolith.Main;
 
 import javax.swing.*;
 import java.util.ArrayList;

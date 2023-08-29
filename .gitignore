@@ -37,6 +37,8 @@ src/ooo/paulsen/python/build
 .idea
 target
 
+Pipfile.lock
+
 # DataStorage
 *.cfg
 

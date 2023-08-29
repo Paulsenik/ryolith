@@ -35,7 +35,8 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <configuration>
-                    <appendAssemblyId>false</appendAssemblyId> <!--only compiles to jar with dependency-->
+                    <appendAssemblyId>false
+                    </appendAssemblyId> <!--only compiles to jar with dependency-->
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
                     </descriptorRefs>
@@ -54,6 +55,25 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.0.0</version>
+                <executions>
+                    <execution>
+                        <id>Build PythonAudioController</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <executable>bash</executable>
+                    <workingDirectory>${project.build.directory}</workingDirectory>
+                    <commandlineArgs>${basedir}/Python/build.sh</commandlineArgs>
+                </configuration>
             </plugin>
         </plugins>
     </build>

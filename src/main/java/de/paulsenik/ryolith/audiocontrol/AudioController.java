@@ -1,4 +1,4 @@
-package ooo.paulsen.ryolith.audiocontrol;
+package de.paulsenik.ryolith.audiocontrol;
 
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
