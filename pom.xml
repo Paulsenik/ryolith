@@ -42,7 +42,7 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>ooo.paulsen.ryolith.Main</mainClass>
+                            <mainClass>de.paulsenik.ryolith.Main</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
@@ -71,7 +71,7 @@
                 </executions>
                 <configuration>
                     <executable>bash</executable>
-                    <workingDirectory>${project.build.directory}</workingDirectory>
+                    <workingDirectory>${basedir}/Python</workingDirectory>
                     <commandlineArgs>${basedir}/Python/build.sh</commandlineArgs>
                 </configuration>
             </plugin>

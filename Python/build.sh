@@ -1,3 +1,3 @@
 #!/bin/bash
-pipenv run pyinstaller --onefile WinAudioControl.py --distpath target --workpath target/pybuild
+pipenv run pyinstaller WinAudioControl.py --clean --noconfirm --onefile --onedir --log-level=WARN --distpath target --workpath target/build
 exit 0
