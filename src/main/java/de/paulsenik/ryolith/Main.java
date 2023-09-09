@@ -23,7 +23,9 @@ public class Main {
 
     // Change before Commit or Build
     public static String version = "v2.0.1";
-    private static final boolean devMode = false;
+    // Run Args
+    private static boolean devMode = false;
+    private static boolean show = false;
 
     // Folder in Home-dir
     public static final String saveDir = System.getProperty("user.home") + PSystem.getFileSeparator() + ".ryolith";
@@ -41,6 +43,8 @@ public class Main {
     }
 
     public static void main(String[] args) {
+
+        processArguments(args);
 
         try {
             instance = new PInstance(PORT, new Runnable() {
@@ -107,6 +111,21 @@ public class Main {
                 saveVariables();
             }
         }, 5 * 60 * 1000, 10 * 60 * 1000);
+
+        if(show){
+            ui.f.setVisible(true);
+            ui.f.setState(JFrame.NORMAL);
+            focusOnFrame();
+        }
+    }
+
+    public static void processArguments(String[] args){
+        if(Arrays.stream(args).anyMatch(s -> (s.equalsIgnoreCase("--dev")))){
+            devMode = true;
+        }
+        if(Arrays.stream(args).anyMatch(s -> (s.equalsIgnoreCase("-show") || s.equalsIgnoreCase("-s")))){
+            show = true;
+        }
     }
 
     /**

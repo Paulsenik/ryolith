@@ -62,6 +62,7 @@ pipenv install
 
 ## TODO
 
-* add Min- & Max-Values for Processes
-* Serial-Protocol for directly controlling a processes' Volume
-* Logger
+- Use JSON for Serial-Protocol
+- add Min- & Max-Values for Processes
+- Serial-Protocol for directly controlling a processes' Volume
+- Logger
