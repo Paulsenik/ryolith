@@ -75,7 +75,7 @@ public class Main {
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
-        }else{
+        } else {
             version += " - Devmode";
         }
 
@@ -90,7 +90,7 @@ public class Main {
         ui = new UI();
 
         // autoconnect
-        if (AudioManager.doAutoConnect && AudioManager.lastPort != null && !AudioManager.lastPort.isEmpty()) {
+        if (AudioManager.autoConnect && AudioManager.lastPort != null && !AudioManager.lastPort.isEmpty()) {
             if (am.connectToSerial(AudioManager.lastPort))
                 System.out.println("[Main] :: Auto-Connected to " + AudioManager.lastPort);
             ui.updateCurrentSerialConnection();
@@ -109,18 +109,18 @@ public class Main {
             }
         }, 5 * 60 * 1000, 10 * 60 * 1000);
 
-        if(show){
+        if (show) {
             ui.f.setVisible(true);
             ui.f.setState(JFrame.NORMAL);
             focusOnFrame();
         }
     }
 
-    public static void processArguments(String[] args){
-        if(Arrays.stream(args).anyMatch(s -> (s.equalsIgnoreCase("--dev")))){
+    public static void processArguments(String[] args) {
+        if (Arrays.stream(args).anyMatch(s -> (s.equalsIgnoreCase("--dev")))) {
             devMode = true;
         }
-        if(Arrays.stream(args).anyMatch(s -> (s.equalsIgnoreCase("-show") || s.equalsIgnoreCase("-s")))){
+        if (Arrays.stream(args).anyMatch(s -> (s.equalsIgnoreCase("-show") || s.equalsIgnoreCase("-s")))) {
             show = true;
         }
     }
@@ -141,10 +141,10 @@ public class Main {
             }
     }
 
-    public static Set<String> getSavedProcesses(){
+    public static Set<String> getSavedProcesses() {
         HashSet<String> list = new HashSet<>();
-        for (Control c : Control.getControls()){
-            for(Group g : c.getGroups()){
+        for (Control c : Control.getControls()) {
+            for (Group g : c.getGroups()) {
                 list.addAll(g.getProcesses());
             }
         }
@@ -247,7 +247,7 @@ public class Main {
                 settings.read(saveDir + PSystem.getFileSeparator() + "settings.cfg");
 
                 try {
-                    AudioManager.doAutoConnect = settings.getBoolean("autoConnect");
+                    AudioManager.autoConnect = settings.getBoolean("autoConnect");
                 } catch (IllegalArgumentException e) {
                     e.printStackTrace();
                 }
@@ -313,7 +313,7 @@ public class Main {
         if (am.getPortName() != null)
             settings.add("port", am.getPortName());
 
-        settings.add("autoConnect", AudioManager.doAutoConnect);
+        settings.add("autoConnect", AudioManager.autoConnect);
         settings.add("minimized", !ui.f.isVisible());
         settings.save(saveDir + PSystem.getFileSeparator() + "settings.cfg");
 
@@ -322,18 +322,19 @@ public class Main {
 
     /**
      * Updates the python-dependencys from the GiHub-Repository by downloading the newest WAC-Binary (Windows Audio Control)
+     *
      * @return true: if depedencys are up-to-date and working - false: if the update failed.
      */
-    public static boolean updateDependencys(){
-        if(downloadFile(webEXEPath_1,localEXEPath)){
+    public static boolean updateDependencys() {
+        if (downloadFile(webEXEPath_1, localEXEPath)) {
 
             System.out.println("Successfully updated WindowsAudioControl.exe from direct-link");
             return true;
-        }else if(downloadFile(webEXEPath_2,localEXEPath)){
+        } else if (downloadFile(webEXEPath_2, localEXEPath)) {
 
             System.out.println("Successfully updated WindowsAudioControl.exe from backup-link");
             return true;
-        }else if(new File(localEXEPath).exists()) { // file exists but is not the newest
+        } else if (new File(localEXEPath).exists()) { // file exists but is not the newest
             // JOptionPane.showMessageDialog(null, "Could not update dependencys for your OS", "Startup-Warning", JOptionPane.INFORMATION_MESSAGE);
             System.err.println("[Main] :: Could not update dependencys for your OS!");
             return true;
@@ -344,6 +345,7 @@ public class Main {
 
     /**
      * Downloads File from given web-url and saves/overwrites it to the given local destination
+     *
      * @return true: if download successful - false: if some error occured
      */
     public static boolean downloadFile(String url, String filepath) {

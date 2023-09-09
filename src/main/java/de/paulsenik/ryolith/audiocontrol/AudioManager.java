@@ -11,13 +11,19 @@ import java.util.ArrayList;
 
 public class AudioManager {
 
-    public static boolean doAutoConnect = true;
+    public static final int MAX_RECONNECT_TRIES = 5;
+    public static final int RECONNECT_DELAY = 1000;
+
+    public static boolean autoConnect = true;
+    // TODO add to config & UiElement
+    public static boolean autoReconnect = true;
     public static String lastPort = "";
 
     // Serial
     private PSerialConnection serial;
     private PSerialListener listener;
     private PCustomProtocol audioControlProtocol_NEW, audioControlProtocol_OLD;
+    private int reconnectCount = 0;
 
     // AudioControl
     private AudioController controller;
@@ -100,9 +106,31 @@ public class AudioManager {
     /**
      * Event-Function is called when
      */
-    private void disconnected(){
+    private void disconnected() {
         Main.ui.updateCurrentSerialConnection();
         System.out.println("[AudioManager] :: disconnected");
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    for (reconnectCount = 0; !serial.isConnected() && reconnectCount < MAX_RECONNECT_TRIES; reconnectCount++) {
+                        System.out.println("[AudioManager] :: reconnecting " + reconnectCount + "/" + MAX_RECONNECT_TRIES);
+
+                        connectToSerial(AudioManager.lastPort);
+
+                        Thread.sleep(RECONNECT_DELAY);
+                    }
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                if (!serial.isConnected()) {
+                    System.out.println("[AudioManager] :: reconnecting failed");
+                } else {
+                    Main.ui.updateCurrentSerialConnection();
+                }
+            }
+        });
+        t.start();
     }
 
     public boolean connectToSerial(String port) {
@@ -111,12 +139,7 @@ public class AudioManager {
                 serial.disconnect();
 
             serial = new PSerialConnection(port);
-            serial.setDisconnectEvent(new Runnable() {
-                @Override
-                public void run() {
-                    disconnected();
-                }
-            });
+            serial.setDisconnectEvent(this::disconnected);
             serial.addListener(listener);
             return serial.connect();
         } catch (RuntimeException e) {
