@@ -47,14 +47,11 @@ public class Main {
         processArguments(args);
 
         try {
-            instance = new PInstance(PORT, new Runnable() {
-                @Override
-                public void run() {
-                    focusOnFrame();
-                    ui.f.setVisible(true);
-                    ui.f.setState(JFrame.NORMAL);
-                    focusOnFrame();
-                }
+            instance = new PInstance(PORT, () -> {
+                focusOnFrame();
+                ui.f.setVisible(true);
+                ui.f.setState(JFrame.NORMAL);
+                focusOnFrame();
             });
         } catch (IOException e) { // other Instace is running
             // JOptionPane.showMessageDialog(null, "AudioController already running!", "AudioController", JOptionPane.INFORMATION_MESSAGE);
@@ -187,7 +184,7 @@ public class Main {
         System.out.println("[Main] :: initVariables() ...");
 
         // Groups
-        String groupFiles[] = PFolder.getFiles(saveDir + PSystem.getFileSeparator() + "Groups", "cfg");
+        String[] groupFiles = PFolder.getFiles(saveDir + PSystem.getFileSeparator() + "Groups", "cfg");
         if (groupFiles != null)
             for (String group : groupFiles) {
                 PDataStorage storage = new PDataStorage();
@@ -210,13 +207,12 @@ public class Main {
                     }
                 } catch (IllegalArgumentException e) {
                     e.printStackTrace();
-                    continue;
                 }
             }
 
         // Controls
-        String controlFiles[] = PFolder.getFiles(saveDir + PSystem.getFileSeparator() + "Controls", "cfg");
-        if (controlFiles != null)
+        String[] controlFiles = PFolder.getFiles(saveDir + PSystem.getFileSeparator() + "Controls", "cfg");
+        if (controlFiles != null) {
             for (String control : controlFiles) {
                 PDataStorage storage = new PDataStorage();
                 try {
@@ -241,10 +237,9 @@ public class Main {
                     }
                 } catch (IllegalArgumentException e) {
                     e.printStackTrace();
-                    continue;
                 }
-
             }
+        }
 
         if (new File(saveDir + PSystem.getFileSeparator() + "settings.cfg").exists()) {
             PDataStorage settings = new PDataStorage();
@@ -259,7 +254,7 @@ public class Main {
 
                 try {
                     AudioManager.lastPort = settings.getString("port");
-                } catch (IllegalArgumentException e) {
+                } catch (IllegalArgumentException ignored) {
                 }
 
                 try {
@@ -349,8 +344,6 @@ public class Main {
 
     /**
      * Downloads File from given web-url and saves/overwrites it to the given local destination
-     * @param url
-     * @param filepath
      * @return true: if download successful - false: if some error occured
      */
     public static boolean downloadFile(String url, String filepath) {
@@ -358,7 +351,6 @@ public class Main {
         try {
             URL website = new URL(url);
             InputStream in = website.openStream();
-            File f = new File(filepath);
             Files.copy(in, new File(filepath).toPath(), StandardCopyOption.REPLACE_EXISTING);
             return true;
         } catch (FileNotFoundException e) {
