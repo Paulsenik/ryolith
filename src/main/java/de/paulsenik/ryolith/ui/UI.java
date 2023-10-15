@@ -3,12 +3,12 @@ package de.paulsenik.ryolith.ui;
 import de.paulsenik.ryolith.Control;
 import de.paulsenik.ryolith.Group;
 import de.paulsenik.ryolith.Main;
-import ooo.paulsen.jpl.io.serial.PSerialConnection;
-import ooo.paulsen.jpl.ui.PUIElement;
-import ooo.paulsen.jpl.ui.PUIList;
-import ooo.paulsen.jpl.ui.PUIText;
-import ooo.paulsen.jpl.ui.core.*;
-import ooo.paulsen.jpl.utils.PSystem;
+import de.paulsenik.jpl.io.serial.PSerialConnection;
+import de.paulsenik.jpl.ui.PUIElement;
+import de.paulsenik.jpl.ui.PUIList;
+import de.paulsenik.jpl.ui.PUIText;
+import de.paulsenik.jpl.ui.core.*;
+import de.paulsenik.jpl.utils.PSystem;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;

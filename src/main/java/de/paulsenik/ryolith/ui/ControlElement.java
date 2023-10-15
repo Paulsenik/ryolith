@@ -3,12 +3,12 @@ package de.paulsenik.ryolith.ui;
 import de.paulsenik.ryolith.Control;
 import de.paulsenik.ryolith.Group;
 import de.paulsenik.ryolith.Main;
-import ooo.paulsen.jpl.ui.PUIElement;
-import ooo.paulsen.jpl.ui.PUIList;
-import ooo.paulsen.jpl.ui.PUIRotaryControl;
-import ooo.paulsen.jpl.ui.PUIText;
-import ooo.paulsen.jpl.ui.core.PUIAction;
-import ooo.paulsen.jpl.ui.core.PUIFrame;
+import de.paulsenik.jpl.ui.PUIElement;
+import de.paulsenik.jpl.ui.PUIList;
+import de.paulsenik.jpl.ui.PUIRotaryControl;
+import de.paulsenik.jpl.ui.PUIText;
+import de.paulsenik.jpl.ui.core.PUIAction;
+import de.paulsenik.jpl.ui.core.PUIFrame;
 
 import java.awt.*;
 import java.util.ArrayList;

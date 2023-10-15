@@ -3,7 +3,7 @@
 bin/
 out/
 
-src/ooo/paulsen/python/build
+src/de/paulsenik/python/target/build
 *.spec
 
 # Log file

@@ -1,10 +1,10 @@
 package de.paulsenik.ryolith;
 
 import de.paulsenik.ryolith.audiocontrol.AudioManager;
-import ooo.paulsen.jpl.io.PDataStorage;
-import ooo.paulsen.jpl.io.PFolder;
-import ooo.paulsen.jpl.utils.PInstance;
-import ooo.paulsen.jpl.utils.PSystem;
+import de.paulsenik.jpl.io.PDataStorage;
+import de.paulsenik.jpl.io.PFolder;
+import de.paulsenik.jpl.utils.PInstance;
+import de.paulsenik.jpl.utils.PSystem;
 import de.paulsenik.ryolith.ui.UI;
 
 import javax.swing.*;
@@ -22,7 +22,7 @@ import java.util.*;
 public class Main {
 
     // Change before Commit or Build
-    public static String version = "v2.0.1";
+    public static String version = "v2.0.2";
     // Run Args
     private static boolean devMode = false;
     private static boolean show = false;

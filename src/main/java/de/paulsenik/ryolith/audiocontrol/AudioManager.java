@@ -2,10 +2,10 @@ package de.paulsenik.ryolith.audiocontrol;
 
 import de.paulsenik.ryolith.Control;
 import de.paulsenik.ryolith.Main;
-import ooo.paulsen.jpl.io.PCustomProtocol;
-import ooo.paulsen.jpl.io.serial.PSerialConnection;
-import ooo.paulsen.jpl.io.serial.PSerialListener;
-import ooo.paulsen.jpl.utils.PSystem;
+import de.paulsenik.jpl.io.PCustomProtocol;
+import de.paulsenik.jpl.io.serial.PSerialConnection;
+import de.paulsenik.jpl.io.serial.PSerialListener;
+import de.paulsenik.jpl.utils.PSystem;
 
 import java.util.ArrayList;
 
